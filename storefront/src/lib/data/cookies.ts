@@ -1,20 +1,13 @@
 import "server-only"
 import { cookies } from "next/headers"
 
-/**
- * Return Authorization header only when a request
- * context is present (build-time SSG has none).
- */
 export const getAuthHeaders = (): { authorization: string } | {} => {
-  // ⬇️ SKIP if cookies() cannot be called (build-time / static route)
-  try {
-    const token = cookies().get("_medusa_jwt")?.value
-    if (token) {
-      return { authorization: `Bearer ${token}` }
-    }
-  } catch {
-    /* no request context → ignore */
+  const token = cookies().get("_medusa_jwt")?.value
+
+  if (token) {
+    return { authorization: `Bearer ${token}` }
   }
+
   return {}
 }
 
