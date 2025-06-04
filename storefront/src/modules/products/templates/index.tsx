@@ -25,6 +25,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   if (!product || !product.id) {
     return notFound()
   }
+  console.log(product.variants)
 
   return (
     <>
