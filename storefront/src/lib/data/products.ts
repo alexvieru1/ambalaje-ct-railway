@@ -33,7 +33,8 @@ export const getProductByHandle = cache(async function (
       {
         handle,
         region_id: regionId,
-        fields: "*variants.calculated_price,+variants.inventory_quantity",
+        fields:
+          "*variants.calculated_price,+variants.inventory_quantity,+variants.prices.*,+metadata,+categories.parent_category.parent_category",
       },
       { next: { tags: ["products"] } }
     )
@@ -54,7 +55,7 @@ export const getProductsList = cache(async function ({
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> {
   const limit = queryParams?.limit || 12
-  const validPageParam = Math.max(pageParam, 1);
+  const validPageParam = Math.max(pageParam, 1)
   const offset = (validPageParam - 1) * limit
   const region = await getRegion(countryCode)
 

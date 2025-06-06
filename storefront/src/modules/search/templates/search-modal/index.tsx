@@ -2,13 +2,13 @@
 
 import { InstantSearch } from "react-instantsearch-hooks-web"
 import { useRouter } from "next/navigation"
-import { MagnifyingGlassMini } from "@medusajs/icons"
 
 import { SEARCH_INDEX_NAME, searchClient } from "@lib/search-client"
 import Hit from "@modules/search/components/hit"
 import Hits from "@modules/search/components/hits"
 import SearchBox from "@modules/search/components/search-box"
 import { useEffect, useRef } from "react"
+import { IconSearch } from "@tabler/icons-react"
 
 export default function SearchModal() {
   const router = useRouter()
@@ -68,7 +68,7 @@ export default function SearchModal() {
               data-testid="search-modal-container"
             >
               <div className="w-full flex items-center gap-x-2 p-4 bg-[rgba(3,7,18,0.5)] text-ui-fg-on-color backdrop-blur-2xl rounded-rounded">
-                <MagnifyingGlassMini />
+                <IconSearch />
                 <SearchBox />
               </div>
               <div className="flex-1 mt-6">

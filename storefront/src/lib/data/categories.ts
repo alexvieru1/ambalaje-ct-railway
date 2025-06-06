@@ -22,11 +22,12 @@ export const getCategoriesList = cache(async function (
 export const getCategoryByHandle = cache(async function (
   categoryHandle: string[]
 ) {
-
-  return sdk.store.category.list(
-    // TODO: Look into fixing the type
-    // @ts-ignore
-    { handle: categoryHandle },
-    { next: { tags: ["categories"] } }
-  )
+  return sdk.store.category
+    .list(
+      { handle: categoryHandle },            // 👈 same query
+      { next: { tags: ["categories"] } }
+    )
+    .then(({ product_categories }) => product_categories[0])  // 👈 only the object
+    //                             ^ now the function’s return type is StoreProductCategory | undefined
 })
+
