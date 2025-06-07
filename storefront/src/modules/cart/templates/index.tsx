@@ -21,7 +21,7 @@ const CartTemplate = ({
               {!customer && (
                 <>
                   <SignInPrompt />
-                  <Divider />
+                  <Divider className="hidden sm:block" />
                 </>
               )}
               <ItemsTemplate items={cart?.items} />

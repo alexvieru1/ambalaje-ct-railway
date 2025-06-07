@@ -14,14 +14,14 @@ const CheckoutSummary = ({ cart }: { cart: any }) => {
           level="h2"
           className="flex flex-row text-3xl-regular items-baseline"
         >
-          In your Cart
+          În coșul tău{" "}
         </Heading>
         <Divider className="my-6" />
         <CartTotals totals={cart} />
         <ItemsPreviewTemplate items={cart?.items} />
-        <div className="my-6">
+        {/* <div className="my-6">
           <DiscountCode cart={cart} />
-        </div>
+        </div> */}
       </div>
     </div>
   )

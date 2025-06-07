@@ -30,7 +30,7 @@ const Review = ({ cart }: { cart: any }) => {
             }
           )}
         >
-          Review
+          Revizuire comandă
         </Heading>
       </div>
       {isOpen && previousStepsCompleted && (
@@ -38,10 +38,10 @@ const Review = ({ cart }: { cart: any }) => {
           <div className="flex items-start gap-x-1 w-full mb-6">
             <div className="w-full">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                By clicking the Place Order button, you confirm that you have
-                read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Medusa
-                Store&apos;s Privacy Policy.
+                Apăsând pe butonul Finalizează comanda, confirmi că ai citit,
+                înțeles și accepți Termenii și condițiile, Termenii de vânzare și
+                Politica de retur, precum și că ai luat la cunoștință Politica de
+                confidențialitate a magazinului Ambalaje Constanța.
               </Text>
             </div>
           </div>

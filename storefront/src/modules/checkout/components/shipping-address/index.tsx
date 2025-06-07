@@ -1,11 +1,12 @@
+// ✅ Updated `billing_address/index.tsx` and `shipping-address/index.tsx` with individual/company toggle
 import { HttpTypes } from "@medusajs/types"
+import Input from "@modules/common/components/input"
+import React, { useState, useEffect, useMemo } from "react"
+import CountrySelect from "../country-select"
+import AddressSelect from "../address-select"
+import { mapKeys } from "lodash"
 import { Container } from "@medusajs/ui"
 import Checkbox from "@modules/common/components/checkbox"
-import Input from "@modules/common/components/input"
-import { mapKeys } from "lodash"
-import React, { useEffect, useMemo, useState } from "react"
-import AddressSelect from "../address-select"
-import CountrySelect from "../country-select"
 
 const ShippingAddress = ({
   customer,
@@ -18,14 +19,31 @@ const ShippingAddress = ({
   checked: boolean
   onChange: () => void
 }) => {
-  const [formData, setFormData] = useState<Record<string, any>>({})
+  const [entityType, setEntityType] = useState<"individual" | "company">(
+    (cart?.metadata?.entity_type as "individual" | "company") || "individual"
+  )
+
+  const [formData, setFormData] = useState<Record<string, any>>({
+    "shipping_address.first_name": cart?.shipping_address?.first_name || "",
+    "shipping_address.last_name": cart?.shipping_address?.last_name || "",
+    "shipping_address.address_1": cart?.shipping_address?.address_1 || "",
+    "shipping_address.company": cart?.shipping_address?.company || "",
+    "shipping_address.postal_code": cart?.shipping_address?.postal_code || "",
+    "shipping_address.city": cart?.shipping_address?.city || "",
+    "shipping_address.country_code": cart?.shipping_address?.country_code || "",
+    "shipping_address.province": cart?.shipping_address?.province || "",
+    "shipping_address.phone": cart?.shipping_address?.phone || "",
+    email: cart?.email || "",
+    "metadata.company_name": cart?.metadata?.company_name || "",
+    "metadata.company_cui": cart?.metadata?.company_cui || "",
+    "metadata.company_j": cart?.metadata?.company_j || "",
+  })
 
   const countriesInRegion = useMemo(
     () => cart?.region?.countries?.map((c) => c.iso_2),
     [cart?.region]
   )
 
-  // check if customer has saved addresses that are in the current region
   const addressesInRegion = useMemo(
     () =>
       customer?.addresses.filter(
@@ -60,7 +78,6 @@ const ShippingAddress = ({
   }
 
   useEffect(() => {
-    // Ensure cart is not null and has a shipping_address before setting form data
     if (cart && cart.shipping_address) {
       setFormAddress(cart?.shipping_address, cart?.email)
     }
@@ -68,7 +85,7 @@ const ShippingAddress = ({
     if (cart && !cart.email && customer?.email) {
       setFormAddress(undefined, customer.email)
     }
-  }, [cart]) // Add cart as a dependency
+  }, [cart])
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -86,7 +103,7 @@ const ShippingAddress = ({
       {customer && (addressesInRegion?.length || 0) > 0 && (
         <Container className="mb-6 flex flex-col gap-y-4 p-5">
           <p className="text-small-regular">
-            {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
+            {`Salut ${customer.first_name}, dorești să folosești una dintre adresele tale salvate?`}
           </p>
           <AddressSelect
             addresses={customer.addresses}
@@ -99,59 +116,75 @@ const ShippingAddress = ({
           />
         </Container>
       )}
+      <div className="mb-4 flex gap-4">
+        <label className="flex items-center gap-2">
+          <input
+            type="radio"
+            name="entityType"
+            value="individual"
+            checked={entityType === "individual"}
+            onChange={() => setEntityType("individual")}
+          />
+          Persoană fizică
+        </label>
+        <label className="flex items-center gap-2">
+          <input
+            type="radio"
+            name="entityType"
+            value="company"
+            checked={entityType === "company"}
+            onChange={() => setEntityType("company")}
+          />
+          Firmă
+        </label>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <Input
-          label="First name"
+          label="Prenume"
           name="shipping_address.first_name"
           autoComplete="given-name"
           value={formData["shipping_address.first_name"]}
           onChange={handleChange}
           required
-          data-testid="shipping-first-name-input"
         />
         <Input
-          label="Last name"
+          label="Nume"
           name="shipping_address.last_name"
           autoComplete="family-name"
           value={formData["shipping_address.last_name"]}
           onChange={handleChange}
           required
-          data-testid="shipping-last-name-input"
         />
         <Input
-          label="Address"
+          label="Adresă"
           name="shipping_address.address_1"
           autoComplete="address-line1"
           value={formData["shipping_address.address_1"]}
           onChange={handleChange}
           required
-          data-testid="shipping-address-input"
         />
         <Input
-          label="Company"
+          label="Companie"
           name="shipping_address.company"
           value={formData["shipping_address.company"]}
           onChange={handleChange}
           autoComplete="organization"
-          data-testid="shipping-company-input"
         />
         <Input
-          label="Postal code"
+          label="Cod poștal"
           name="shipping_address.postal_code"
           autoComplete="postal-code"
           value={formData["shipping_address.postal_code"]}
           onChange={handleChange}
           required
-          data-testid="shipping-postal-code-input"
         />
         <Input
-          label="City"
+          label="Oraș"
           name="shipping_address.city"
           autoComplete="address-level2"
           value={formData["shipping_address.city"]}
           onChange={handleChange}
           required
-          data-testid="shipping-city-input"
         />
         <CountrySelect
           name="shipping_address.country_code"
@@ -160,25 +193,21 @@ const ShippingAddress = ({
           value={formData["shipping_address.country_code"]}
           onChange={handleChange}
           required
-          data-testid="shipping-country-select"
         />
         <Input
-          label="State / Province"
+          label="Județ / Provincie"
           name="shipping_address.province"
           autoComplete="address-level1"
           value={formData["shipping_address.province"]}
           onChange={handleChange}
-          required
-          data-testid="shipping-province-input"
         />
       </div>
       <div className="my-8">
         <Checkbox
-          label="Billing address same as shipping address"
+          label="Adresa de facturare este aceeași cu cea de livrare"
           name="same_as_billing"
           checked={checked}
           onChange={onChange}
-          data-testid="billing-address-checkbox"
         />
       </div>
       <div className="grid grid-cols-2 gap-4 mb-4">
@@ -186,21 +215,44 @@ const ShippingAddress = ({
           label="Email"
           name="email"
           type="email"
-          title="Enter a valid email address."
           autoComplete="email"
           value={formData.email}
           onChange={handleChange}
           required
-          data-testid="shipping-email-input"
         />
         <Input
-          label="Phone"
+          label="Telefon"
           name="shipping_address.phone"
           autoComplete="tel"
           value={formData["shipping_address.phone"]}
           onChange={handleChange}
-          data-testid="shipping-phone-input"
         />
+
+        {entityType === "company" && (
+          <>
+            <Input
+              label="Nume Firmă"
+              name="metadata.company_name"
+              value={formData["metadata.company_name"]}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              label="CUI Firmă"
+              name="metadata.company_cui"
+              value={formData["metadata.company_cui"]}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              label="J Firmă"
+              name="metadata.company_j"
+              value={formData["metadata.company_j"]}
+              onChange={handleChange}
+              required
+            />
+          </>
+        )}
       </div>
     </>
   )

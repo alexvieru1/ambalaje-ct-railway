@@ -89,7 +89,10 @@ export const DesktopNavbar = ({ categories }: Props) => {
               />
             </motion.svg>
           </button>
-          <LocalizedClientLink href="/search">
+          <LocalizedClientLink
+            href="/search"
+            className="flex items-center justify-center text-sm text-gray-700 hover:text-[#44b74a] transition"
+          >
             <IconSearch />
           </LocalizedClientLink>
         </div>
