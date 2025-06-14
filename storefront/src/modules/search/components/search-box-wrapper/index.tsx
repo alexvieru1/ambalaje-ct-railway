@@ -31,7 +31,7 @@ type SearchBoxProps = {
 
 const SearchBoxWrapper = ({
   children,
-  placeholder = "Search products...",
+  placeholder = "Caută produse...",
   ...rest
 }: SearchBoxProps) => {
   const { query, refine } = useSearchBox(rest)
