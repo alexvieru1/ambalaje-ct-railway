@@ -68,6 +68,51 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
     .catch(medusaError)
 }
 
+export async function addCustomToCart({
+  variantId,
+  quantity,
+  countryCode,
+}: {
+  variantId: string
+  quantity: number
+  countryCode: string
+}) {
+  // Retrieve or create the cart
+  const cart = await getOrSetCart(countryCode)
+  if (!cart) {
+    throw new Error("Error retrieving or creating cart")
+  }
+
+  // Get publishable API key from env
+  const apiKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+  if (!apiKey) {
+    throw new Error("No publishable API key found in environment variables.")
+  }
+
+  // Call your custom API route
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}/line-items-tiered`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-publishable-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        variant_id: variantId,
+        quantity,
+      }),
+    }
+  )
+
+  if (!res.ok) {
+    throw new Error("Failed to add item to cart")
+  }
+
+  const data = await res.json()
+  return data.cart
+}
+
 export async function addToCart({
   variantId,
   quantity,

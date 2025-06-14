@@ -4,22 +4,12 @@ import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "next/navigation"
 import { toast } from "sonner"
-import {
-  IconShoppingCartPlus,
-  IconZoomIn,
-} from "@tabler/icons-react"
+import { IconShoppingCartPlus, IconZoomIn } from "@tabler/icons-react"
 
-import { addToCart } from "@lib/data/cart"
-import {
-  HttpTypes,
-  StoreProductCategory,
-} from "@medusajs/types"
+import { HttpTypes, StoreProductCategory } from "@medusajs/types"
 
 import { Button } from "../ui/button"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "../ui/radio-group"
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -29,6 +19,7 @@ import {
 } from "../ui/select"
 import { Input } from "../ui/input"
 import { CategoryBreadcrumb } from "../ui/category-breadcrumb"
+import { addCustomToCart, addToCart } from "@lib/data/cart"
 
 type Props = {
   product: HttpTypes.StoreProduct
@@ -45,8 +36,8 @@ type ExtendedVariant = HttpTypes.StoreProductVariant & {
 }
 
 type PackagingOption = {
-  label: string          // e.g. "buc"
-  multiplier: number     // e.g. 10
+  label: string // e.g. "buc"
+  multiplier: number // e.g. 10
 }
 
 export const ProductPage = ({ product, category }: Props) => {
@@ -65,6 +56,8 @@ export const ProductPage = ({ product, category }: Props) => {
     return Array.isArray(raw) ? raw : []
   }, [product])
 
+  console.log(product)
+
   const [selectedPackaging, setSelectedPackaging] = useState<
     PackagingOption | undefined
   >(packagingOptions[0])
@@ -72,8 +65,7 @@ export const ProductPage = ({ product, category }: Props) => {
   /* quantity expressed in NUMBER OF PACKS */
   const [baseQuantity, setBaseQuantity] = useState(1)
 
-  const effectiveQty =
-    baseQuantity * (selectedPackaging?.multiplier ?? 1)
+  const effectiveQty = baseQuantity * (selectedPackaging?.multiplier ?? 1)
 
   /* ──────────────────────────────────────── */
   /*   VARIANT SELECTION                     */
@@ -82,9 +74,9 @@ export const ProductPage = ({ product, category }: Props) => {
     product.variants?.[0]?.id ?? ""
   )
 
-  const selectedVariant = (
-    (product.variants as ExtendedVariant[]) ?? []
-  ).find((v) => v.id === selectedVariantId)
+  const selectedVariant = ((product.variants as ExtendedVariant[]) ?? []).find(
+    (v) => v.id === selectedVariantId
+  )
 
   const sku = selectedVariant?.sku || "—"
 
@@ -98,9 +90,7 @@ export const ProductPage = ({ product, category }: Props) => {
 
     const tiers = selectedVariant.prices
       .filter((p) => p.currency_code === "ron")
-      .sort(
-        (a, b) => (a.min_quantity ?? 0) - (b.min_quantity ?? 0)
-      )
+      .sort((a, b) => (a.min_quantity ?? 0) - (b.min_quantity ?? 0))
 
     const match = tiers.find((t) => {
       const min = t.min_quantity ?? 1
@@ -109,9 +99,7 @@ export const ProductPage = ({ product, category }: Props) => {
     })
 
     return (
-      match?.amount ??
-      selectedVariant.calculated_price?.calculated_amount ??
-      0
+      match?.amount ?? selectedVariant.calculated_price?.calculated_amount ?? 0
     )
   }, [selectedVariant, effectiveQty])
 
@@ -122,7 +110,7 @@ export const ProductPage = ({ product, category }: Props) => {
 
   const handleAddToCart = async () => {
     try {
-      await addToCart({
+      await addCustomToCart({
         variantId: selectedVariantId,
         quantity: effectiveQty,
         countryCode: params.countryCode,
@@ -130,12 +118,9 @@ export const ProductPage = ({ product, category }: Props) => {
 
       toast.success(
         <div>
-          <span className="text-green-800 font-semibold">
-            {product.title}
-          </span>
+          <span className="text-green-800 font-semibold">{product.title}</span>
           <div className="text-green-700 font-medium">
-            {effectiveQty}{" "}
-            {effectiveQty === 1 ? "bucată" : "bucăți"} ×{" "}
+            {effectiveQty} {effectiveQty === 1 ? "bucată" : "bucăți"} ×{" "}
             {dynamicPrice} RON adăugat
             {effectiveQty === 1 ? "ă" : "e"} în coș!
           </div>
@@ -204,15 +189,11 @@ export const ProductPage = ({ product, category }: Props) => {
           {/* packaging */}
           {packagingOptions.length > 0 && selectedPackaging && (
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-700">
-                Ambalaj
-              </p>
+              <p className="text-sm font-medium text-gray-700">Ambalaj</p>
               <RadioGroup
                 value={selectedPackaging.label}
                 onValueChange={(val) => {
-                  const found = packagingOptions.find(
-                    (o) => o.label === val
-                  )
+                  const found = packagingOptions.find((o) => o.label === val)
                   if (found) {
                     setSelectedPackaging(found)
                     setBaseQuantity(1)
@@ -221,18 +202,9 @@ export const ProductPage = ({ product, category }: Props) => {
                 className="flex space-x-4"
               >
                 {packagingOptions.map((opt) => (
-                  <div
-                    key={opt.label}
-                    className="flex items-center space-x-2"
-                  >
-                    <RadioGroupItem
-                      value={opt.label}
-                      id={opt.label}
-                    />
-                    <label
-                      htmlFor={opt.label}
-                      className="text-sm capitalize"
-                    >
+                  <div key={opt.label} className="flex items-center space-x-2">
+                    <RadioGroupItem value={opt.label} id={opt.label} />
+                    <label htmlFor={opt.label} className="text-sm capitalize">
                       {opt.label}
                     </label>
                   </div>
@@ -265,9 +237,7 @@ export const ProductPage = ({ product, category }: Props) => {
             <Button
               size="icon"
               variant="outline"
-              onClick={() =>
-                setBaseQuantity(Math.max(1, baseQuantity - 1))
-              }
+              onClick={() => setBaseQuantity(Math.max(1, baseQuantity - 1))}
             >
               –
             </Button>

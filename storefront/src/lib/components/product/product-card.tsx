@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { IconShoppingCartPlus } from "@tabler/icons-react"
 import { useParams } from "next/navigation"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { addToCart } from "@lib/data/cart"
+import { addCustomToCart, addToCart } from "@lib/data/cart"
 
 type ProductCardProps = {
   product: HttpTypes.StoreProduct
@@ -37,37 +37,38 @@ export const ProductCard = ({ product, href }: ProductCardProps) => {
 
   const sku = product.variants?.[0]?.sku || product.id.split("/").pop()
 
-const handleAddToCart = async () => {
-  if (!firstVariant?.id) return
+  const handleAddToCart = async () => {
+    if (!firstVariant?.id) return
 
-  try {
-    await addToCart({
-      variantId: firstVariant.id,
-      quantity,
-      countryCode: params.countryCode,
-    })
+    try {
+      await addCustomToCart({
+        variantId: firstVariant.id,
+        quantity,
+        countryCode: params.countryCode,
+      })
 
-    toast.success(
-      <div>
-        <span style={{ color: "#166534", fontWeight: "600" }}>
-          {product.title}
-        </span>
-        <div style={{ color: "#15803d", fontWeight: "500" }}>
-          {quantity} produs{quantity === 1 ? "" : "e"} ×{" "}
-          {firstVariant.calculated_price?.calculated_amount ?? "—"} RON adăugat
-          {quantity === 1 ? "" : "e"} în coș!
-        </div>
-      </div>,
-      {
-        style: { color: "#166534" },
-        duration: 4000,
-        position: "bottom-right",
-      }
-    )
-  } catch (err) {
-    toast.error("A apărut o eroare la adăugarea în coș.")
+      toast.success(
+        <div>
+          <span style={{ color: "#166534", fontWeight: "600" }}>
+            {product.title}
+          </span>
+          <div style={{ color: "#15803d", fontWeight: "500" }}>
+            {quantity} produs{quantity === 1 ? "" : "e"} ×{" "}
+            {firstVariant.calculated_price?.calculated_amount ?? "—"} RON
+            adăugat
+            {quantity === 1 ? "" : "e"} în coș!
+          </div>
+        </div>,
+        {
+          style: { color: "#166534" },
+          duration: 4000,
+          position: "bottom-right",
+        }
+      )
+    } catch (err) {
+      toast.error("A apărut o eroare la adăugarea în coș.")
+    }
   }
-}
 
   return (
     <Card className="relative flex flex-col items-center p-4 shadow-sm hover:shadow-md transition">
