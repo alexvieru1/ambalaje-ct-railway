@@ -46,14 +46,14 @@ const LineItemPrice = ({ item, style = "default" }: LineItemPriceProps) => {
   return (
     <div className="flex flex-col gap-x-2 text-ui-fg-subtle items-end">
       {hasDiscount && (
-        <div className="text-left">
-          {style === "default" && <span className="text-ui-fg-subtle">Original: </span>}
+        <div className="text-right md:text-left">
+          {/* {style === "default" && <span className="text-ui-fg-subtle">Original: </span>} */}
           <span className="line-through text-ui-fg-muted" data-testid="product-original-price">
             {convertToLocale({ amount: originalTotal, currency_code: currencyCode })}
           </span>
-          {style === "default" && (
+          {/* {style === "default" && (
             <span className="text-ui-fg-interactive ml-1">–{discountPct}%</span>
-          )}
+          )} */}
         </div>
       )}
       <span
