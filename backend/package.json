@@ -19,7 +19,8 @@
     "start": "init-backend && cd .medusa/server && medusa start --verbose",
     "dev": "medusa develop",
     "email:dev": "email dev --dir=./src/modules/email-notifications/templates --port=3002",
-    "predeploy": "medusa db:migrate"
+    "predeploy": "medusa db:migrate",
+    "preinstall": "corepack enable"
   },
   "dependencies": {
     "@medusajs/admin-sdk": "latest",
@@ -62,9 +63,14 @@
     "typescript": "^5.7.2",
     "vite": "^5.4.11"
   },
-  "packageManager": "pnpm@9.10.0",
+  "packageManager": "pnpm@10.18.1",
   "engines": {
-    "node": "22.x",
+    "node": "20.x",
     "npm": "10.x"
+  },
+  "pnpm": {
+    "overrides": {
+      "webpack": "^5"
+    }
   }
 }

@@ -1,0 +1,11 @@
+{
+  "packageManager": "pnpm@10.18.1",
+  "engines": {
+    "node": "20.x"
+  },
+  "pnpm": {
+    "overrides": {
+      "webpack": "^5"
+    }
+  }
+}
