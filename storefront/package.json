@@ -90,5 +90,10 @@
   "engines": {
     "node": "20.x"
   },
-  "packageManager": "pnpm@10.18.1"
+  "packageManager": "pnpm@10.18.1",
+  "pnpm": {
+    "overrides": {
+      "webpack": "^5"
+    }
+  }
 }
