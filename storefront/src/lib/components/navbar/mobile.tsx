@@ -10,8 +10,13 @@ import {
   IconSearch,
   IconShoppingCart,
   IconUser,
+  IconHome,
+  IconInfoCircle,
+  IconPhone,
+  IconPackage,
 } from "@tabler/icons-react"
 import { Logo } from "../logo"
+import { Separator } from "@lib/components/ui/separator"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const Path = (props: any) => (
@@ -110,14 +115,57 @@ const MobileNavbar = ({ categories }: Props) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="absolute top-full left-0 w-full bg-white border-t shadow-md z-40"
+            role="menu"
+            aria-label="Meniu principal"
           >
             <div className="flex flex-col p-4 space-y-4 max-h-[calc(100vh-60px)] overflow-y-auto">
+              {/* GENERAL LINKS */}
+              <nav className="grid grid-cols-2 gap-3" aria-label="Meniu general">
+                <LocalizedClientLink
+                  href="/"
+                  className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <IconHome className="h-4 w-4" />
+                  <span>Acasă</span>
+                </LocalizedClientLink>
+                <LocalizedClientLink
+                  href="/produse"
+                  className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <IconPackage className="h-4 w-4" />
+                  <span>Produse</span>
+                </LocalizedClientLink>
+                <LocalizedClientLink
+                  href="/despre-noi"
+                  className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <IconInfoCircle className="h-4 w-4" />
+                  <span>Despre noi</span>
+                </LocalizedClientLink>
+                <LocalizedClientLink
+                  href="/contact"
+                  className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <IconPhone className="h-4 w-4" />
+                  <span>Contact</span>
+                </LocalizedClientLink>
+              </nav>
+
+              <Separator />
+
               {topLevelCategories.map((cat) => (
                 <div key={cat.id} className="space-y-1">
                   <div className="flex justify-between items-center">
                     <LocalizedClientLink
                       href={`/produse/${cat.handle}`}
                       className="text-sm font-medium text-gray-800"
+                      onClick={() => {
+                        if (!(cat.category_children?.length > 0)) setIsOpen(false)
+                      }}
                     >
                       {cat.name}
                     </LocalizedClientLink>
@@ -139,23 +187,33 @@ const MobileNavbar = ({ categories }: Props) => {
 
                   {/* Subcategories */}
                   <AnimatePresence initial={false}>
-                    {openMenus.includes(cat.id) &&
-                      cat.category_children?.map((sub) => (
-                        <motion.div
-                          key={sub.id}
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          className="ml-4"
+                    {openMenus.includes(cat.id) && (
+                      <div className="ml-4 space-y-1">
+                        <LocalizedClientLink
+                          href={`/produse/${cat.handle}`}
+                          className="block text-sm font-medium text-foreground/80 hover:underline"
+                          onClick={() => setIsOpen(false)}
                         >
-                          <LocalizedClientLink
-                            href={`/produse/${cat.handle}/${sub.handle}`}
-                            className="block text-sm text-muted-foreground hover:underline"
+                          • Toate produsele
+                        </LocalizedClientLink>
+                        {cat.category_children?.map((sub) => (
+                          <motion.div
+                            key={sub.id}
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
                           >
-                            {sub.name}
-                          </LocalizedClientLink>
-                        </motion.div>
-                      ))}
+                            <LocalizedClientLink
+                              href={`/produse/${cat.handle}/${sub.handle}`}
+                              className="block text-sm text-muted-foreground hover:underline"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              {sub.name}
+                            </LocalizedClientLink>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
                   </AnimatePresence>
                 </div>
               ))}
