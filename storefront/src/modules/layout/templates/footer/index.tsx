@@ -3,7 +3,6 @@ import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Image from "next/image"
 
-
 export default async function Footer() {
   const categories = await listCategories()
   const mainCategories = categories?.filter((c) => !c.parent_category)
@@ -63,6 +62,22 @@ export default async function Footer() {
               >
                 ANPC
               </a>
+            </li>
+            <li>
+              <LocalizedClientLink
+                href="/content/privacy-policy"
+                className="hover:text-[#44b74a] transition"
+              >
+                Politica de Confidențialitate
+              </LocalizedClientLink>
+            </li>
+            <li>
+              <LocalizedClientLink
+                href="/content/terms-of-use"
+                className="hover:text-[#44b74a] transition"
+              >
+                Termeni și Condiții de Utilizare
+              </LocalizedClientLink>
             </li>
             <li>
               <a
