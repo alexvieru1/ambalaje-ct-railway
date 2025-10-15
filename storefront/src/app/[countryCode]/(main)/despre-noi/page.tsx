@@ -23,7 +23,7 @@ export default function DespreNoiPage() {
       <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
         <div>
           <Image
-            src="/images/team-working.jpg"
+            src="/images/team.png"
             alt="Echipa Ambalaje Constanța"
             width={600}
             height={400}

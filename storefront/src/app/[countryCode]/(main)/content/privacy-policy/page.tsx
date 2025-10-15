@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
 
       <Separator className="mb-10" />
 
-      <section id="cine-suntem" className="space-y-4 mb-10">
+      <section id="cine-suntem" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">1. Cine suntem</h2>
         <p className="text-muted-foreground">
           Ambalaje Constanța (denumită în continuare „noi”) operează site-ul ambalaje-constanta.ro (denumit „Site-ul”).
@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      <section id="ce-date-colectam" className="space-y-4 mb-10">
+      <section id="ce-date-colectam" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">2. Ce date colectăm</h2>
         <ul className="list-disc pl-6 text-muted-foreground space-y-1">
           <li>Identificare: nume, prenume, companie, funcție.</li>
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
         </ul>
       </section>
 
-      <section id="cum-folosim" className="space-y-4 mb-10">
+      <section id="cum-folosim" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">3. Cum folosim datele</h2>
         <ul className="list-disc pl-6 text-muted-foreground space-y-1">
           <li>Procesare comenzi: creare cont, livrare, emitere documente fiscale, servicii suport.</li>
@@ -77,7 +77,7 @@ export default function PrivacyPolicyPage() {
         </ul>
       </section>
 
-      <section id="temei-legal" className="space-y-4 mb-10">
+      <section id="temei-legal" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">4. Temei legal</h2>
         <ul className="list-disc pl-6 text-muted-foreground space-y-1">
           <li>Executarea contractului (art. 6(1)(b) GDPR) – pentru comenzi și servicii.</li>
@@ -87,7 +87,7 @@ export default function PrivacyPolicyPage() {
         </ul>
       </section>
 
-      <section id="durata-stocare" className="space-y-4 mb-10">
+      <section id="durata-stocare" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">5. Durata de stocare</h2>
         <p className="text-muted-foreground">
           Păstrăm datele cât timp este necesar pentru scopurile menționate sau cât impune legea.
@@ -95,7 +95,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      <section id="partajare" className="space-y-4 mb-10">
+      <section id="partajare" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">6. Partajarea datelor</h2>
         <p className="text-muted-foreground">
           Putem partaja datele cu furnizori de servicii (curierat, plăți, găzduire, suport tehnic), exclusiv pentru
@@ -103,14 +103,14 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      <section id="transferuri" className="space-y-4 mb-10">
+      <section id="transferuri" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">7. Transferuri internaționale</h2>
         <p className="text-muted-foreground">
           Dacă transferăm date în afara SEE, vom aplica garanții adecvate (ex. Clauze Contractuale Standard) și vă vom informa conform legii.
         </p>
       </section>
 
-      <section id="drepturi" className="space-y-4 mb-10">
+      <section id="drepturi" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">8. Drepturile dvs.</h2>
         <ul className="list-disc pl-6 text-muted-foreground space-y-1">
           <li>Drept de acces, rectificare, ștergere („dreptul de a fi uitat”).</li>
@@ -122,7 +122,7 @@ export default function PrivacyPolicyPage() {
         <p className="text-muted-foreground">Pentru exercitarea drepturilor, vedeți secțiunea „Contact”.</p>
       </section>
 
-      <section id="cookie" className="space-y-4 mb-10">
+      <section id="cookie" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">9. Cookie-uri</h2>
         <p className="text-muted-foreground">
           Folosim cookie-uri necesare pentru funcționarea Site-ului și, cu acordul dvs., cookie-uri de analiză/marketing.
@@ -130,7 +130,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      <section id="securitate" className="space-y-4 mb-10">
+      <section id="securitate" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">10. Securitate</h2>
         <p className="text-muted-foreground">
           Implementăm măsuri tehnice și organizatorice adecvate pentru a proteja datele personale împotriva accesului neautorizat,
@@ -138,14 +138,14 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      <section id="minori" className="space-y-4 mb-10">
+      <section id="minori" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">11. Minori</h2>
         <p className="text-muted-foreground">
           Site-ul nu se adresează persoanelor sub 16 ani. Nu colectăm intenționat date despre minori.
         </p>
       </section>
 
-      <section id="modificari" className="space-y-4 mb-10">
+      <section id="modificari" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">12. Modificări ale politicii</h2>
         <p className="text-muted-foreground">
           Putem actualiza periodic această politică. Cea mai nouă versiune va fi disponibilă pe această pagină,
@@ -153,7 +153,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
-      <section id="contact" className="space-y-4">
+      <section id="contact" className="space-y-4 scroll-mt-20">
         <h2 className="text-2xl font-semibold">13. Contact</h2>
         <p className="text-muted-foreground">
           Pentru întrebări sau pentru a vă exercita drepturile conform GDPR, ne puteți contacta la:
