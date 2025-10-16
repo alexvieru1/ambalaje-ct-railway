@@ -25,11 +25,22 @@ export const ProductCard = ({ product, href }: ProductCardProps) => {
   const multipleVariants = (product.variants?.length || 0) > 1
   const prices = product.variants
     ?.map((v) => {
-      if (typeof v.calculated_price === "object") {
-        return v.calculated_price.calculated_amount
-      } else if (typeof v.calculated_price === "number") {
-        return v.calculated_price
+      const variantPrice = v?.calculated_price
+
+      if (
+        variantPrice &&
+        typeof variantPrice === "object" &&
+        "calculated_amount" in variantPrice
+      ) {
+        return typeof variantPrice.calculated_amount === "number"
+          ? variantPrice.calculated_amount
+          : null
       }
+
+      if (typeof variantPrice === "number") {
+        return variantPrice
+      }
+
       return null
     })
     .filter((p): p is number => typeof p === "number")
