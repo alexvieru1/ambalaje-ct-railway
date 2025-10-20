@@ -151,7 +151,22 @@ const extractPackagingOptions = (
 }
 
 export const ProductPage = ({ product, category }: Props) => {
-  /*   VARIANT SELECTION                     */
+  const versionedThumbnail = useMemo(() => {
+    if (!product.thumbnail) {
+      return null
+    }
+
+    try {
+      const url = new URL(product.thumbnail)
+      if (product.updated_at) {
+        url.searchParams.set("v", String(new Date(product.updated_at).getTime()))
+      }
+      return url.toString()
+    } catch {
+      return product.thumbnail
+    }
+  }, [product.thumbnail, product.updated_at])
+
   const [selectedVariantId, setSelectedVariantId] = useState<string>(
     product.variants?.[0]?.id ?? ""
   )
@@ -324,7 +339,7 @@ export const ProductPage = ({ product, category }: Props) => {
             <>
               <div className="relative w-full h-96 rounded-lg overflow-hidden">
                 <Image
-                  src={product.thumbnail}
+                  src={versionedThumbnail ?? product.thumbnail}
                   alt={product.title}
                   fill
                   className="object-contain"
@@ -465,7 +480,7 @@ export const ProductPage = ({ product, category }: Props) => {
           <div className="relative bg-white rounded-lg max-w-4xl w-full p-4 mx-4">
             <div className="relative w-full h-[60vh] flex items-center justify-center">
               <Image
-                src={product.thumbnail}
+                src={versionedThumbnail ?? product.thumbnail}
                 alt={product.title}
                 fill
                 className="object-contain"

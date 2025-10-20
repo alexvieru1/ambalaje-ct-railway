@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import { HttpTypes } from "@medusajs/types"
 import { Card, CardContent } from "../ui/card"
@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { IconShoppingCartPlus } from "@tabler/icons-react"
 import { useParams } from "next/navigation"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { addCustomToCart, addToCart } from "@lib/data/cart"
+import { addCustomToCart } from "@lib/data/cart"
 
 type ProductCardProps = {
   product: HttpTypes.StoreProduct
@@ -20,6 +20,22 @@ type ProductCardProps = {
 export const ProductCard = ({ product, href }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1)
   const params = useParams() as { countryCode: string }
+
+  const versionedThumbnail = useMemo(() => {
+    if (!product.thumbnail) {
+      return null
+    }
+
+    try {
+      const url = new URL(product.thumbnail)
+      if (product.updated_at) {
+        url.searchParams.set("v", String(new Date(product.updated_at).getTime()))
+      }
+      return url.toString()
+    } catch {
+      return product.thumbnail
+    }
+  }, [product.thumbnail, product.updated_at])
 
   const firstVariant = product.variants?.[0]
   const multipleVariants = (product.variants?.length || 0) > 1
@@ -92,7 +108,7 @@ export const ProductCard = ({ product, href }: ProductCardProps) => {
             aria-label={`Vezi detalii pentru ${product.title}`}
           >
             <Image
-              src={product.thumbnail}
+              src={versionedThumbnail ?? product.thumbnail}
               alt={product.title}
               fill
               className="object-contain"

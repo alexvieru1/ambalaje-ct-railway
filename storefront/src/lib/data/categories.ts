@@ -1,13 +1,18 @@
 import { sdk } from "@lib/config"
-import { cache } from "react"
 
-export const listCategories = cache(async function () {
+export async function listCategories() {
   return sdk.store.category
-    .list({ fields: "+category_children" }, { next: { tags: ["categories"] } })
+    .list(
+      {
+        fields:
+          "+category_children,+category_children.rank,+category_children.handle,+category_children.name,+rank,+handle,+name",
+      },
+      { cache: "no-store" }
+    )
     .then(({ product_categories }) => product_categories)
-})
+}
 
-export const getCategoriesList = cache(async function (
+export async function getCategoriesList(
   offset: number = 0,
   limit: number = 100
 ) {
@@ -15,19 +20,16 @@ export const getCategoriesList = cache(async function (
     // TODO: Look into fixing the type
     // @ts-ignore
     { limit, offset },
-    { next: { tags: ["categories"] } }
+    { cache: "no-store" }
   )
-})
+}
 
-export const getCategoryByHandle = cache(async function (
-  categoryHandle: string[]
-) {
+export async function getCategoryByHandle(categoryHandle: string[]) {
   return sdk.store.category
     .list(
       { handle: categoryHandle },            // 👈 same query
-      { next: { tags: ["categories"] } }
+      { cache: "no-store" }
     )
     .then(({ product_categories }) => product_categories[0])  // 👈 only the object
     //                             ^ now the function’s return type is StoreProductCategory | undefined
-})
-
+}

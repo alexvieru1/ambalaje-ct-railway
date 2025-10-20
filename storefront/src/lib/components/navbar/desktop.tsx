@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, useMemo, Suspense } from "react"
 import { IconSearch, IconShoppingCart, IconUser } from "@tabler/icons-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { StoreProductCategory } from "@medusajs/types"
@@ -12,13 +12,36 @@ type Props = {
   categories: StoreProductCategory[]
 }
 
+const rankFallback = (rank?: number | null) =>
+  typeof rank === "number" ? rank : Number.MAX_SAFE_INTEGER
+
+const sortByRank = <T extends { rank?: number | null }>(items: T[] = []) =>
+  [...items].sort((a, b) => rankFallback(a.rank) - rankFallback(b.rank))
+
 export const DesktopNavbar = ({ categories }: Props) => {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
-  const [activeCategory, setActiveCategory] =
-    useState<StoreProductCategory | null>(null)
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null)
 
-  const topLevelCategories = categories.filter((cat) => !cat.parent_category)
+  const topLevelCategories = useMemo(
+    () => sortByRank(categories.filter((cat) => !cat.parent_category)),
+    [categories]
+  )
+
+  const activeCategory = useMemo(() => {
+    if (!activeCategoryId) return null
+    return (
+      topLevelCategories.find((cat) => cat.id === activeCategoryId) ?? null
+    )
+  }, [activeCategoryId, topLevelCategories])
+
+  const activeSubcategories = useMemo(() => {
+    if (!activeCategory?.category_children?.length) {
+      return []
+    }
+
+    return sortByRank(activeCategory.category_children ?? [])
+  }, [activeCategory])
 
   const generalPages = [
     { title: "Acasă", path: "/" },
@@ -29,14 +52,32 @@ export const DesktopNavbar = ({ categories }: Props) => {
 
   useEffect(() => {
     setIsOpen(false)
-    setActiveCategory(null)
+    setActiveCategoryId(null)
   }, [pathname])
+
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    if (!topLevelCategories.length) {
+      setActiveCategoryId(null)
+      return
+    }
+
+    setActiveCategoryId((current) => {
+      if (current && topLevelCategories.some((cat) => cat.id === current)) {
+        return current
+      }
+      return topLevelCategories[0].id
+    })
+  }, [isOpen, topLevelCategories])
 
   const handleToggleMenu = () => {
     setIsOpen((prev) => {
       const newState = !prev
-      if (newState && categories.length > 0) {
-        setActiveCategory(categories[0])
+      if (newState && topLevelCategories.length > 0) {
+        setActiveCategoryId(topLevelCategories[0].id)
       }
       return newState
     })
@@ -159,10 +200,10 @@ export const DesktopNavbar = ({ categories }: Props) => {
                     <li key={cat.id}>
                       <LocalizedClientLink
                         href={`/produse/${cat.handle}`}
-                        onMouseEnter={() => setActiveCategory(cat)}
-                        onFocus={() => setActiveCategory(cat)}
+                        onMouseEnter={() => setActiveCategoryId(cat.id)}
+                        onFocus={() => setActiveCategoryId(cat.id)}
                         className={`block text-gray-700 hover:text-[#44b74a] transition ${
-                          activeCategory?.id === cat.id ? "text-[#44b74a]" : ""
+                          activeCategoryId === cat.id ? "text-[#44b74a]" : ""
                         }`}
                       >
                         {cat.name}
@@ -175,9 +216,7 @@ export const DesktopNavbar = ({ categories }: Props) => {
               {/* SUBCATEGORIES */}
               <div>
                 <AnimatePresence mode="wait">
-                  {activeCategory &&
-                    Array.isArray(activeCategory.category_children) &&
-                    activeCategory.category_children.length > 0 && (
+                  {activeCategory && activeSubcategories.length > 0 && (
                       <motion.div
                         key={activeCategory.id}
                         initial={{ opacity: 0, y: 10 }}
@@ -189,7 +228,7 @@ export const DesktopNavbar = ({ categories }: Props) => {
                           {activeCategory.name}
                         </h4>
                         <ul className="space-y-2">
-                          {activeCategory.category_children.map((child) => (
+                          {activeSubcategories.map((child) => (
                             <li key={child.id}>
                               <LocalizedClientLink
                                 href={`/produse/${activeCategory.handle}/${child.handle}`}

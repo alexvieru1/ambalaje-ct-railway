@@ -16,6 +16,8 @@ type Props = {
   searchParams?: { page?: string }
 }
 
+export const dynamic = "force-dynamic"
+
 /* ───────────── 1.  Metadata ───────────── */
 export async function generateMetadata({
   params,

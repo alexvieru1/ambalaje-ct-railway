@@ -30,7 +30,7 @@ export async function getProductByHandle(handle: string, regionId: string) {
         handle,
         region_id: regionId,
         fields:
-          "*variants.calculated_price,+variants.inventory_quantity,+variants.prices.*,+metadata,+categories.parent_category.parent_category",
+          "*variants.calculated_price,+variants.inventory_quantity,+variants.prices.*,+metadata,+categories.parent_category.parent_category,+images.*,+updated_at",
       },
       { cache: "no-store" }
     )
@@ -67,7 +67,7 @@ export const getProductsList = async function ({
         limit,
         offset,
         region_id: region.id,
-        fields: "*variants.calculated_price",
+        fields: "*variants.calculated_price,+updated_at",
         ...queryParams,
       },
       { cache: "no-store" }
