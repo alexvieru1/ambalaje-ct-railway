@@ -19,7 +19,7 @@ import {
 } from "../ui/select"
 import { Input } from "../ui/input"
 import { CategoryBreadcrumb } from "../ui/category-breadcrumb"
-import { addCustomToCart, addToCart } from "@lib/data/cart"
+import { addCustomToCart } from "@lib/data/cart"
 
 type Props = {
   product: HttpTypes.StoreProduct
@@ -40,27 +40,159 @@ type PackagingOption = {
   multiplier: number // e.g. 10
 }
 
+const PACKAGING_METADATA_KEYS = [
+  "packaging_options",
+  "packagingOptions",
+  "packaging_option",
+] as const
+
+const parsePackagingOptions = (raw: unknown): PackagingOption[] => {
+  if (raw === null || raw === undefined) {
+    return []
+  }
+
+  const tryParse = (value: unknown): unknown => {
+    if (typeof value === "string") {
+      const trimmed = value.trim()
+      if (!trimmed) {
+        return []
+      }
+      try {
+        return JSON.parse(trimmed)
+      } catch {
+        return trimmed
+      }
+    }
+    return value
+  }
+
+  const toOption = (candidate: any): PackagingOption | null => {
+    if (!candidate) {
+      return null
+    }
+
+    if (typeof candidate === "string") {
+      return { label: candidate, multiplier: 1 }
+    }
+
+    if (typeof candidate === "object") {
+      const labelCandidate =
+        "label" in candidate ? (candidate as any).label : undefined
+      const multiplierCandidate =
+        "multiplier" in candidate ? (candidate as any).multiplier : undefined
+
+      if (labelCandidate !== undefined) {
+        const multiplierNumber =
+          typeof multiplierCandidate === "number"
+            ? multiplierCandidate
+            : Number(multiplierCandidate ?? 1)
+
+        if (!Number.isFinite(multiplierNumber) || multiplierNumber <= 0) {
+          return null
+        }
+
+        return {
+          label: String(labelCandidate),
+          multiplier: multiplierNumber,
+        }
+      }
+    }
+
+    return null
+  }
+
+  const parsed = tryParse(raw)
+
+  if (Array.isArray(parsed)) {
+    return parsed
+      .map((entry) => toOption(entry))
+      .filter((opt): opt is PackagingOption => opt !== null)
+  }
+
+  if (parsed && typeof parsed === "object") {
+    const direct = toOption(parsed)
+    if (direct) {
+      return [direct]
+    }
+
+    return Object.entries(parsed)
+      .map(([label, multiplier]) =>
+        toOption({ label, multiplier: multiplier as unknown })
+      )
+      .filter((opt): opt is PackagingOption => opt !== null)
+  }
+
+  if (typeof parsed === "string") {
+    return parsed ? [{ label: parsed, multiplier: 1 }] : []
+  }
+
+  return []
+}
+
+const extractPackagingOptions = (
+  metadata: Record<string, unknown> | null | undefined
+): PackagingOption[] => {
+  if (!metadata) {
+    return []
+  }
+
+  for (const key of PACKAGING_METADATA_KEYS) {
+    if (key in metadata) {
+      const options = parsePackagingOptions(
+        (metadata as Record<string, unknown>)[key]
+      )
+      if (options.length > 0) {
+        return options
+      }
+    }
+  }
+
+  return []
+}
+
 export const ProductPage = ({ product, category }: Props) => {
   /* ──────────────────────────────────────── */
   /*   PACKAGING OPTIONS & STATE             */
   /* ──────────────────────────────────────── */
   const packagingOptions = useMemo<PackagingOption[]>(() => {
-    const raw = product.metadata?.packaging_options
-    if (typeof raw === "string") {
-      try {
-        return JSON.parse(raw)
-      } catch {
-        return []
+    const productOptions = extractPackagingOptions(
+      product.metadata as Record<string, unknown> | null | undefined
+    )
+    if (productOptions.length > 0) {
+      return productOptions
+    }
+
+    for (const variant of product.variants || []) {
+      const variantOptions = extractPackagingOptions(
+        variant.metadata as Record<string, unknown> | null | undefined
+      )
+      if (variantOptions.length > 0) {
+        return variantOptions
       }
     }
-    return Array.isArray(raw) ? raw : []
-  }, [product])
 
-  console.log(product)
+    return []
+  }, [product])
 
   const [selectedPackaging, setSelectedPackaging] = useState<
     PackagingOption | undefined
-  >(packagingOptions[0])
+  >(() => packagingOptions[0])
+
+  useEffect(() => {
+    if (!packagingOptions.length) {
+      if (selectedPackaging !== undefined) {
+        setSelectedPackaging(undefined)
+      }
+      return
+    }
+
+    if (
+      !selectedPackaging ||
+      !packagingOptions.some((opt) => opt.label === selectedPackaging.label)
+    ) {
+      setSelectedPackaging(packagingOptions[0])
+    }
+  }, [packagingOptions, selectedPackaging])
 
   /* quantity expressed in NUMBER OF PACKS */
   const [baseQuantity, setBaseQuantity] = useState(1)
@@ -187,11 +319,13 @@ export const ProductPage = ({ product, category }: Props) => {
           </p>
 
           {/* packaging */}
-          {packagingOptions.length > 0 && selectedPackaging && (
+          {packagingOptions.length > 0 && (
             <div className="space-y-1">
               <p className="text-sm font-medium text-gray-700">Ambalaj</p>
               <RadioGroup
-                value={selectedPackaging.label}
+                value={
+                  selectedPackaging?.label ?? packagingOptions[0]?.label ?? ""
+                }
                 onValueChange={(val) => {
                   const found = packagingOptions.find((o) => o.label === val)
                   if (found) {
