@@ -151,9 +151,7 @@ const extractPackagingOptions = (
 }
 
 export const ProductPage = ({ product, category }: Props) => {
-  /* ──────────────────────────────────────── */
   /*   VARIANT SELECTION                     */
-  /* ──────────────────────────────────────── */
   const [selectedVariantId, setSelectedVariantId] = useState<string>(
     product.variants?.[0]?.id ?? ""
   )
@@ -170,9 +168,7 @@ export const ProductPage = ({ product, category }: Props) => {
     }
   }, [selectedVariant, product.variants])
 
-  /* ──────────────────────────────────────── */
   /*   PACKAGING OPTIONS & STATE             */
-  /* ──────────────────────────────────────── */
   const productPackagingOptions = useMemo<PackagingOption[]>(() => {
     return extractPackagingOptions(
       product.metadata as Record<string, unknown> | null | undefined

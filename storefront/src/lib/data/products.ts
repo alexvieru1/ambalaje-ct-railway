@@ -1,11 +1,10 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
-import { cache } from "react"
 import { getRegion } from "./regions"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { sortProducts } from "@lib/util/sort-products"
 
-export const getProductsById = cache(async function ({
+export const getProductsById = async function ({
   ids,
   regionId,
 }: {
@@ -19,10 +18,10 @@ export const getProductsById = cache(async function ({
         region_id: regionId,
         fields: "*variants.calculated_price,+variants.inventory_quantity",
       },
-      { next: { tags: ["products"] } }
+      { cache: "no-store" }
     )
     .then(({ products }) => products)
-})
+}
 
 export async function getProductByHandle(handle: string, regionId: string) {
   return sdk.store.product
@@ -38,7 +37,7 @@ export async function getProductByHandle(handle: string, regionId: string) {
     .then(({ products }) => products[0])
 }
 
-export const getProductsList = cache(async function ({
+export const getProductsList = async function ({
   pageParam = 1,
   queryParams,
   countryCode,
@@ -71,7 +70,7 @@ export const getProductsList = cache(async function ({
         fields: "*variants.calculated_price",
         ...queryParams,
       },
-      { next: { tags: ["products"] } }
+      { cache: "no-store" }
     )
     .then(({ products, count }) => {
       const nextPage = count > offset + limit ? pageParam + 1 : null
@@ -85,13 +84,13 @@ export const getProductsList = cache(async function ({
         queryParams,
       }
     })
-})
+}
 
 /**
  * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
  * It will then return the paginated products based on the page and limit parameters.
  */
-export const getProductsListWithSort = cache(async function ({
+export const getProductsListWithSort = async function ({
   page = 0,
   queryParams,
   sortBy = "created_at",
@@ -135,4 +134,4 @@ export const getProductsListWithSort = cache(async function ({
     nextPage,
     queryParams,
   }
-})
+}
