@@ -152,63 +152,100 @@ const extractPackagingOptions = (
 
 export const ProductPage = ({ product, category }: Props) => {
   /* ──────────────────────────────────────── */
-  /*   PACKAGING OPTIONS & STATE             */
-  /* ──────────────────────────────────────── */
-  const packagingOptions = useMemo<PackagingOption[]>(() => {
-    const productOptions = extractPackagingOptions(
-      product.metadata as Record<string, unknown> | null | undefined
-    )
-    if (productOptions.length > 0) {
-      return productOptions
-    }
-
-    for (const variant of product.variants || []) {
-      const variantOptions = extractPackagingOptions(
-        variant.metadata as Record<string, unknown> | null | undefined
-      )
-      if (variantOptions.length > 0) {
-        return variantOptions
-      }
-    }
-
-    return []
-  }, [product])
-
-  const [selectedPackaging, setSelectedPackaging] = useState<
-    PackagingOption | undefined
-  >(() => packagingOptions[0])
-
-  useEffect(() => {
-    if (!packagingOptions.length) {
-      if (selectedPackaging !== undefined) {
-        setSelectedPackaging(undefined)
-      }
-      return
-    }
-
-    if (
-      !selectedPackaging ||
-      !packagingOptions.some((opt) => opt.label === selectedPackaging.label)
-    ) {
-      setSelectedPackaging(packagingOptions[0])
-    }
-  }, [packagingOptions, selectedPackaging])
-
-  /* quantity expressed in NUMBER OF PACKS */
-  const [baseQuantity, setBaseQuantity] = useState(1)
-
-  const effectiveQty = baseQuantity * (selectedPackaging?.multiplier ?? 1)
-
-  /* ──────────────────────────────────────── */
   /*   VARIANT SELECTION                     */
   /* ──────────────────────────────────────── */
   const [selectedVariantId, setSelectedVariantId] = useState<string>(
     product.variants?.[0]?.id ?? ""
   )
 
-  const selectedVariant = ((product.variants as ExtendedVariant[]) ?? []).find(
-    (v) => v.id === selectedVariantId
-  )
+  const selectedVariant = useMemo(() => {
+    return ((product.variants as ExtendedVariant[]) ?? []).find(
+      (v) => v.id === selectedVariantId
+    )
+  }, [product.variants, selectedVariantId])
+
+  useEffect(() => {
+    if (!selectedVariant && product.variants?.length) {
+      setSelectedVariantId(product.variants[0].id)
+    }
+  }, [selectedVariant, product.variants])
+
+  /* ──────────────────────────────────────── */
+  /*   PACKAGING OPTIONS & STATE             */
+  /* ──────────────────────────────────────── */
+  const productPackagingOptions = useMemo<PackagingOption[]>(() => {
+    return extractPackagingOptions(
+      product.metadata as Record<string, unknown> | null | undefined
+    )
+  }, [product.metadata])
+
+  const variantPackagingOptions = useMemo<PackagingOption[]>(() => {
+    return extractPackagingOptions(
+      selectedVariant?.metadata as Record<string, unknown> | null | undefined
+    )
+  }, [selectedVariant])
+
+  const fallbackVariantPackaging = useMemo<PackagingOption[]>(() => {
+    for (const variant of product.variants || []) {
+      const options = extractPackagingOptions(
+        variant.metadata as Record<string, unknown> | null | undefined
+      )
+      if (options.length > 0) {
+        return options
+      }
+    }
+    return []
+  }, [product.variants])
+
+  const packagingOptions = useMemo<PackagingOption[]>(() => {
+    if (variantPackagingOptions.length > 0) {
+      return variantPackagingOptions
+    }
+    if (productPackagingOptions.length > 0) {
+      return productPackagingOptions
+    }
+    return fallbackVariantPackaging
+  }, [
+    variantPackagingOptions,
+    productPackagingOptions,
+    fallbackVariantPackaging,
+  ])
+
+  const [selectedPackaging, setSelectedPackaging] = useState<
+    PackagingOption | undefined
+  >(() => packagingOptions[0])
+
+  const [baseQuantity, setBaseQuantity] = useState(1)
+
+  useEffect(() => {
+    if (!packagingOptions.length) {
+      if (selectedPackaging !== undefined) {
+        setSelectedPackaging(undefined)
+      }
+      if (baseQuantity !== 1) {
+        setBaseQuantity(1)
+      }
+      return
+    }
+
+    const matching = selectedPackaging
+      ? packagingOptions.find((opt) => opt.label === selectedPackaging.label)
+      : undefined
+
+    if (!matching || !selectedPackaging) {
+      setSelectedPackaging(packagingOptions[0])
+      setBaseQuantity(1)
+      return
+    }
+
+    if (matching.multiplier !== selectedPackaging.multiplier) {
+      setSelectedPackaging(matching)
+      setBaseQuantity(1)
+    }
+  }, [packagingOptions, selectedPackaging, baseQuantity])
+
+  /* quantity expressed in NUMBER OF PACKS */
+  const effectiveQty = baseQuantity * (selectedPackaging?.multiplier ?? 1)
 
   const sku = selectedVariant?.sku || "—"
 
