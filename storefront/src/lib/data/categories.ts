@@ -9,7 +9,21 @@ export async function listCategories() {
       },
       { cache: "no-store" }
     )
-    .then(({ product_categories }) => product_categories)
+    .then(({ product_categories }) =>
+      product_categories.map((category) => ({
+        ...category,
+        category_children: category.category_children
+          ?.slice()
+          .sort((a, b) => {
+            const rankA =
+              typeof a.rank === "number" ? a.rank : Number.MAX_SAFE_INTEGER
+            const rankB =
+              typeof b.rank === "number" ? b.rank : Number.MAX_SAFE_INTEGER
+            if (rankA !== rankB) return rankA - rankB
+            return (a.name || "").localeCompare(b.name || "")
+          }),
+      }))
+    )
 }
 
 export async function getCategoriesList(

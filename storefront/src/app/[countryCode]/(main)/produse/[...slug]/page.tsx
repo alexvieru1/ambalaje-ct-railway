@@ -107,7 +107,18 @@ export default async function ProduseDynamicPage({
   if (!category) notFound()
 
   /* ――― category listing ――― */
-  const hasChildren = category.category_children?.length > 0
+  const categoryChildren = (category.category_children || [])
+    .slice()
+    .sort((a, b) => {
+      const rankA =
+        typeof a.rank === "number" ? a.rank : Number.MAX_SAFE_INTEGER
+      const rankB =
+        typeof b.rank === "number" ? b.rank : Number.MAX_SAFE_INTEGER
+      if (rankA !== rankB) return rankA - rankB
+      return (a.name || "").localeCompare(b.name || "")
+    })
+
+  const hasChildren = categoryChildren.length > 0
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 min-h-[80vh] flex flex-col">
@@ -116,7 +127,7 @@ export default async function ProduseDynamicPage({
       {hasChildren ? (
         /* child categories */
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {category.category_children.map((sub) => (
+          {categoryChildren.map((sub) => (
             <div
               key={sub.id}
               className="border rounded-md overflow-hidden text-center hover:shadow-md transition"
