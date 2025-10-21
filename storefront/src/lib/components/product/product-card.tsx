@@ -62,7 +62,26 @@ export const ProductCard = ({ product, href }: ProductCardProps) => {
     .filter((p): p is number => typeof p === "number")
   const minPrice = prices && prices.length > 0 ? Math.min(...prices) : null
 
-  const sku = product.variants?.[0]?.sku || product.id.split("/").pop()
+  const sku = useMemo(() => {
+    const primarySku = firstVariant?.sku?.trim()
+    if (primarySku) {
+      return primarySku
+    }
+
+    const metadataSku =
+      product.metadata && typeof (product.metadata as any).sku === "string"
+        ? ((product.metadata as any).sku as string).trim()
+        : null
+    if (metadataSku) {
+      return metadataSku
+    }
+
+    if (product.handle) {
+      return product.handle
+    }
+
+    return "—"
+  }, [firstVariant?.sku, product.metadata, product.handle])
 
   const handleAddToCart = async () => {
     if (!firstVariant?.id) return
