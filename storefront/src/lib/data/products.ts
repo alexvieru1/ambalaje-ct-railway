@@ -107,16 +107,28 @@ export const getProductsListWithSort = async function ({
 }> {
   const limit = queryParams?.limit || 12
 
-  const {
-    response: { products, count },
-  } = await getProductsList({
-    pageParam: 0,
-    queryParams: {
-      ...queryParams,
-      limit: 100,
-    },
-    countryCode,
-  })
+  const region = await getRegion(countryCode)
+
+  if (!region) {
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+    }
+  }
+
+  const { products, count } = await sdk.store.product
+    .list(
+      {
+        ...queryParams,
+        limit: 100,
+        offset: 0,
+        region_id: region.id,
+        fields:
+          "*variants.calculated_price,+variants.inventory_quantity,+variants.prices.*,+metadata,+categories.parent_category.parent_category,+updated_at",
+      },
+      { cache: "no-store" }
+    )
+    .then(({ products, count }) => ({ products, count }))
 
   const sortedProducts = sortProducts(products, sortBy)
 

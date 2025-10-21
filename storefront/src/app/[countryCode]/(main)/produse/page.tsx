@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Descoperă gama noastră de ambalaje ecologice și consumabile.",
 }
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export default async function ProdusePage({
   params,
 }: {
@@ -15,7 +18,16 @@ export default async function ProdusePage({
 }) {
   /* category data need NOT be region-aware */
   const allCategories = await listCategories()
-  const top = allCategories.filter((c) => c.parent_category === null)
+  const top = allCategories
+    .filter((c) => c.parent_category === null)
+    .sort((a, b) => {
+      const rankA =
+        typeof a.rank === "number" ? a.rank : Number.MAX_SAFE_INTEGER
+      const rankB =
+        typeof b.rank === "number" ? b.rank : Number.MAX_SAFE_INTEGER
+      if (rankA !== rankB) return rankA - rankB
+      return (a.name || "").localeCompare(b.name || "")
+    })
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-8">
