@@ -4,8 +4,9 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import StoreTemplate from "@modules/store/templates"
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+  title: "Magazin | Ambalaje Constanța",
+  description:
+    "Explorează întreaga gamă de ambalaje: cutii carton, pungi, folie stretch, ambalaje alimentare și multe altele. Livrare rapidă în toată România.",
 }
 
 type Params = {

@@ -128,7 +128,7 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          Plată
           {!isOpen && paymentReady && <CheckCircle2 />}
         </Heading>
         {!isOpen && paymentReady && (

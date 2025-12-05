@@ -3,8 +3,9 @@ import { Metadata } from "next"
 import LoginTemplate from "@modules/account/templates/login-template"
 
 export const metadata: Metadata = {
-  title: "Logare | Ambalaje Contanța",
-  description: "Loghează-te în contul tău Ambalaje Constanța",
+  title: "Autentificare | Ambalaje Constanța",
+  description:
+    "Autentifică-te în contul tău pentru a accesa comenzile și a gestiona profilul.",
 }
 
 export default function Login() {

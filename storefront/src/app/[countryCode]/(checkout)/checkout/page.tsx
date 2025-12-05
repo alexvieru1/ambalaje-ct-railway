@@ -9,7 +9,9 @@ import { HttpTypes } from "@medusajs/types"
 import { getCustomer } from "@lib/data/customer"
 
 export const metadata: Metadata = {
-  title: "Checkout",
+  title: "Finalizare Comandă | Ambalaje Constanța",
+  description:
+    "Finalizează comanda ta de ambalaje. Plată securizată și livrare rapidă în toată România.",
 }
 
 const fetchCart = async () => {
