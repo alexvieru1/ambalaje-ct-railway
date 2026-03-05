@@ -29,7 +29,6 @@ export async function generateMetadata({
   const handle   = slug[slug.length - 1] || ""
   const region   = await getRegion(countryCode)
 
-  /* product? */
   if (region) {
     const product = await getProductByHandle(handle, region.id)
     if (product) {
