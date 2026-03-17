@@ -43,9 +43,9 @@ export default async function Footer() {
         <div>
           <h4 className="text-sm font-semibold mb-3">Contact</h4>
           <ul className="text-sm text-muted-foreground space-y-2">
-            <li>Tel: 0722 123 456</li>
+            <li>Tel: 0722 631 611</li>
             <li>Email: office@ambalajeconstanta.ro</li>
-            <li>Bd. Aurel Vlaicu, 163, Constanța</li>
+            <li>B-dul Aurel Vlaicu, 163, Constanța</li>
           </ul>
         </div>
 

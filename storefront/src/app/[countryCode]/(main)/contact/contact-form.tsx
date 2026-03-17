@@ -376,7 +376,7 @@ export default function ContactForm() {
           <h2 className="font-semibold mb-2">Date de contact</h2>
           <ul className="text-sm space-y-1">
             <li>
-              <strong>Telefon:</strong> 07xx xxx xxx
+              <strong>Telefon:</strong> 0722 631 611
             </li>
             <li>
               <strong>Email:</strong> contact@ambalaje-constanta.ro
@@ -388,7 +388,7 @@ export default function ContactForm() {
         </Card>
         <Card className="p-6">
           <h2 className="font-semibold mb-2">Adresă & vizite</h2>
-          <p className="text-sm">B-dul Exemplu nr. 123, Constanța</p>
+          <p className="text-sm">B-dul Aurel Vlaicu, 163, Constanța</p>
           <p className="text-xs text-muted-foreground mt-2">
             Vizitele se fac pe bază de programare („Programare vizită la sediu”).
           </p>

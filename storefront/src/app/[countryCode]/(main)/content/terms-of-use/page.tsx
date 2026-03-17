@@ -98,9 +98,9 @@ export default function TermsOfUsePage() {
           </p>
           <address className="not-italic text-muted-foreground">
             Ambalaje Constanța<br />
-            B-dul Exemplu nr. 123, Constanța<br />
+            B-dul Aurel Vlaicu, 163, Constanța<br />
             Email: <a href="mailto:contact@ambalaje-constanta.ro" className="underline">contact@ambalaje-constanta.ro</a><br />
-            Telefon: 07xx xxx xxx
+            Telefon: 0722 631 611
           </address>
         </section>
       </section>
