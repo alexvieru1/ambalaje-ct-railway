@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { Resend } from "resend"
 import { z } from "zod"
 
-const fromEmail = process.env.RESEND_FROM_EMAIL
-if (!process.env.RESEND_API_KEY || !fromEmail) {
-  throw new Error("Missing RESEND_API_KEY or RESEND_FROM_EMAIL environment variable")
-}
-
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const contactSchema = z.object({
   tip: z.enum(["mostre", "consiliere", "vizita", "proiect", "cerinte"]),
   nume: z.string().min(2).max(100),
@@ -30,6 +23,18 @@ const tipLabels: Record<string, string> = {
 }
 
 export async function POST(req: NextRequest) {
+  const apiKey = process.env.RESEND_API_KEY
+  const fromEmail = process.env.RESEND_FROM_EMAIL
+  if (!apiKey || !fromEmail) {
+    console.error("Missing RESEND_API_KEY or RESEND_FROM_EMAIL environment variable")
+    return NextResponse.json(
+      { error: "Eroare de configurare server." },
+      { status: 500 }
+    )
+  }
+
+  const resend = new Resend(apiKey)
+
   let body: unknown
   try {
     body = await req.json()
