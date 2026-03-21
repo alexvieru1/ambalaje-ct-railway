@@ -2,10 +2,7 @@ import { Metadata } from "next"
 
 import CollectionSliderServer from "@modules/home/components/collection-slider/server"
 import CoreValues from "@modules/home/components/core-values"
-import FeaturedProducts from "@modules/home/components/featured-products"
 import OffersSlideshow from "@modules/home/components/offers-slideshow"
-import { getCollectionsWithProducts } from "@lib/data/collections"
-import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
   title: "Ambalaje Constanța - Soluții Complete de Ambalare",
@@ -18,13 +15,6 @@ export default async function Home({
 }: {
   params: { countryCode: string }
 }) {
-  const collections = await getCollectionsWithProducts(countryCode)
-  const region = await getRegion(countryCode)
-
-  if (!collections || !region) {
-    return null
-  }
-
   return (
     <>
       <OffersSlideshow />
@@ -39,11 +29,6 @@ export default async function Home({
         title="Cele mai vândute"
         countryCode={countryCode}
       />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div>
     </>
   )
 }
