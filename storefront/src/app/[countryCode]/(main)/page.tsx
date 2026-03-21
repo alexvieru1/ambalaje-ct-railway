@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 
+import CoreValues from "@modules/home/components/core-values"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import OffersSlideshow from "@modules/home/components/offers-slideshow"
 import { getCollectionsWithProducts } from "@lib/data/collections"
@@ -26,6 +27,7 @@ export default async function Home({
   return (
     <>
       <OffersSlideshow />
+      <CoreValues />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />
