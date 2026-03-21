@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 
+import CollectionSliderServer from "@modules/home/components/collection-slider/server"
 import CoreValues from "@modules/home/components/core-values"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import OffersSlideshow from "@modules/home/components/offers-slideshow"
@@ -28,6 +29,16 @@ export default async function Home({
     <>
       <OffersSlideshow />
       <CoreValues />
+      <CollectionSliderServer
+        handle="adaugate-recent"
+        title="Adăugate recent"
+        countryCode={countryCode}
+      />
+      <CollectionSliderServer
+        handle="cele-mai-vandute"
+        title="Cele mai vândute"
+        countryCode={countryCode}
+      />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />

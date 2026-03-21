@@ -2,7 +2,7 @@ import {
   IconTruckDelivery,
   IconShieldCheck,
   IconRefresh,
-  IconGiftCard,
+  IconCoinOff,
 } from "@tabler/icons-react"
 
 const values = [
@@ -22,7 +22,7 @@ const values = [
     description: "Returnare simplă și rapidă",
   },
   {
-    icon: IconGiftCard,
+    icon: IconCoinOff,
     title: "Livrare gratuită",
     description: "La comenzi de peste 500 RON",
   },
