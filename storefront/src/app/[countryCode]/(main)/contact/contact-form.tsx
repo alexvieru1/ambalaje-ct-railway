@@ -58,6 +58,7 @@ export default function ContactForm() {
 
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>()
   const [selectedTime, setSelectedTime] = useState<string | undefined>()
 
@@ -98,14 +99,31 @@ export default function ContactForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setSubmitting(true)
     setSent(null)
+    setError(null)
     try {
-      await new Promise((r) => setTimeout(r, 1000)) // simulate request
+      const { gdpr, vizita_data, ...rest } = values
+      const payload = {
+        ...rest,
+        vizita_data: vizita_data ? vizita_data.toISOString() : undefined,
+      }
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        throw new Error(data?.error ?? "Eroare la trimiterea mesajului.")
+      }
+
       setSent("Mulțumim! Mesajul a fost trimis cu succes.")
       form.reset()
       setSelectedDate(undefined)
       setSelectedTime(undefined)
-    } catch {
-      setSent("A apărut o eroare. Încercați din nou.")
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "A apărut o eroare. Încercați din nou.")
     } finally {
       setSubmitting(false)
     }
@@ -363,6 +381,7 @@ export default function ContactForm() {
 
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               {sent && <p className="text-sm text-green-600">{sent}</p>}
+              {error && <p className="text-sm text-red-600">{error}</p>}
               <Button type="submit" disabled={submitting}>
                 {submitting ? "Se trimite..." : `Trimite (${tipLabel})`}
               </Button>
