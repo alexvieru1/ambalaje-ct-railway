@@ -20,12 +20,12 @@ export default async function orderPlacedHandler({
       template: EmailTemplates.ORDER_PLACED,
       data: {
         emailOptions: {
-          replyTo: 'info@example.com',
-          subject: 'Your order has been placed'
+          replyTo: 'office@ambalajeconstanta.ro',
+          subject: 'Comanda dumneavoastră a fost plasată'
         },
         order,
         shippingAddress,
-        preview: 'Thank you for your order!'
+        preview: 'Vă mulțumim pentru comandă!'
       }
     })
   } catch (error) {
