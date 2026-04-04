@@ -7,6 +7,8 @@ import {
   type MedusaResponse,
 } from "@medusajs/framework/http";
 import { SetTieredPricesSchema } from "./admin/set-tiered-prices/validators";
+import { SetPackagingOptionsSchema } from "./admin/set-packaging-options/validators";
+import { SetVariantPackagingSchema } from "./admin/set-variant-packaging/validators";
 import { StoreAddCartLineItem } from "@medusajs/medusa/api/store/carts/validators";
 
 // Middleware to redirect root path to admin
@@ -32,6 +34,16 @@ export default defineMiddlewares({
       matcher: "/admin/set-tiered-prices",
       method: "POST",
       middlewares: [validateAndTransformBody(SetTieredPricesSchema)],
+    },
+    {
+      matcher: "/admin/set-packaging-options",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SetPackagingOptionsSchema)],
+    },
+    {
+      matcher: "/admin/set-variant-packaging",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SetVariantPackagingSchema)],
     },
     {
       matcher: "/store/carts/:id/line-items-tiered", // <-- your custom route

@@ -150,6 +150,25 @@ const extractPackagingOptions = (
   return []
 }
 
+/**
+ * Sort variants by the numeric size extracted from the title/option value.
+ * e.g. "25x25 ct1" → sorts by 25, "30x30 ct4" → sorts by 30
+ * Variants without a parseable number go to the end.
+ */
+const sortVariantsBySize = (
+  variants: HttpTypes.StoreProductVariant[]
+): HttpTypes.StoreProductVariant[] => {
+  return [...variants].sort((a, b) => {
+    const extractSize = (v: HttpTypes.StoreProductVariant): number => {
+      const text =
+        v.options?.map((o) => o.value).join(" ") || v.title || ""
+      const match = text.match(/(\d+)/)
+      return match ? parseInt(match[1], 10) : Infinity
+    }
+    return extractSize(a) - extractSize(b)
+  })
+}
+
 export const ProductPage = ({ product, category }: Props) => {
   const versionedThumbnail = useMemo(() => {
     if (!product.thumbnail) {
@@ -167,21 +186,26 @@ export const ProductPage = ({ product, category }: Props) => {
     }
   }, [product.thumbnail, product.updated_at])
 
+  const sortedVariants = useMemo(
+    () => sortVariantsBySize(product.variants ?? []),
+    [product.variants]
+  )
+
   const [selectedVariantId, setSelectedVariantId] = useState<string>(
-    product.variants?.[0]?.id ?? ""
+    sortedVariants[0]?.id ?? ""
   )
 
   const selectedVariant = useMemo(() => {
-    return ((product.variants as ExtendedVariant[]) ?? []).find(
+    return (sortedVariants as ExtendedVariant[]).find(
       (v) => v.id === selectedVariantId
     )
-  }, [product.variants, selectedVariantId])
+  }, [sortedVariants, selectedVariantId])
 
   useEffect(() => {
-    if (!selectedVariant && product.variants?.length) {
-      setSelectedVariantId(product.variants[0].id)
+    if (!selectedVariant && sortedVariants.length) {
+      setSelectedVariantId(sortedVariants[0].id)
     }
-  }, [selectedVariant, product.variants])
+  }, [selectedVariant, sortedVariants])
 
   /*   PACKAGING OPTIONS & STATE             */
   const productPackagingOptions = useMemo<PackagingOption[]>(() => {
@@ -197,7 +221,7 @@ export const ProductPage = ({ product, category }: Props) => {
   }, [selectedVariant])
 
   const fallbackVariantPackaging = useMemo<PackagingOption[]>(() => {
-    for (const variant of product.variants || []) {
+    for (const variant of sortedVariants) {
       const options = extractPackagingOptions(
         variant.metadata as Record<string, unknown> | null | undefined
       )
@@ -206,7 +230,7 @@ export const ProductPage = ({ product, category }: Props) => {
       }
     }
     return []
-  }, [product.variants])
+  }, [sortedVariants])
 
   const packagingOptions = useMemo<PackagingOption[]>(() => {
     if (variantPackagingOptions.length > 0) {
@@ -272,15 +296,22 @@ export const ProductPage = ({ product, category }: Props) => {
       .filter((p) => p.currency_code === "ron")
       .sort((a, b) => (a.min_quantity ?? 0) - (b.min_quantity ?? 0))
 
+    if (!tiers.length) {
+      return selectedVariant?.calculated_price?.calculated_amount ?? 0
+    }
+
+    // Exact match for the current quantity
     const match = tiers.find((t) => {
       const min = t.min_quantity ?? 1
       const max = t.max_quantity ?? Infinity
       return effectiveQty >= min && effectiveQty <= max
     })
 
-    return (
-      match?.amount ?? selectedVariant.calculated_price?.calculated_amount ?? 0
-    )
+    if (match) return match.amount
+
+    // No match — fall back to the lowest available tier price
+    // (e.g. when per-unit tier is disabled but product only has set/bax tiers)
+    return tiers[0].amount
   }, [selectedVariant, effectiveQty])
 
   /* ──────────────────────────────────────── */
@@ -396,22 +427,32 @@ export const ProductPage = ({ product, category }: Props) => {
           )}
 
           {/* variant select */}
-          {product.variants && product.variants.length > 1 && (
-            <Select
-              defaultValue={selectedVariantId}
-              onValueChange={setSelectedVariantId}
-            >
-              <SelectTrigger className="h-9">
-                <SelectValue placeholder="Selectează o variantă" />
-              </SelectTrigger>
-              <SelectContent>
-                {product.variants.map((variant) => (
-                  <SelectItem key={variant.id} value={variant.id}>
-                    {variant.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {sortedVariants.length > 1 && (
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-700">
+                {product.options?.[0]?.title ?? "Variantă"}
+              </p>
+              <Select
+                defaultValue={selectedVariantId}
+                onValueChange={setSelectedVariantId}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Selectează o variantă" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortedVariants.map((variant) => {
+                    const optionValue = variant.options
+                      ?.map((o) => o.value)
+                      .join(" / ")
+                    return (
+                      <SelectItem key={variant.id} value={variant.id}>
+                        {optionValue || variant.title}
+                      </SelectItem>
+                    )
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           {/* qty controls */}

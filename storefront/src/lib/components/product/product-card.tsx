@@ -39,28 +39,40 @@ export const ProductCard = ({ product, href }: ProductCardProps) => {
 
   const firstVariant = product.variants?.[0]
   const multipleVariants = (product.variants?.length || 0) > 1
-  const prices = product.variants
-    ?.map((v) => {
-      const variantPrice = v?.calculated_price
+  const minPrice = useMemo(() => {
+    // Try tiered prices first (lowest tier amount across all variants)
+    const tieredPrices = product.variants
+      ?.flatMap((v: any) =>
+        (v.prices ?? [])
+          .filter((p: any) => p.currency_code === "ron")
+          .map((p: any) => p.amount)
+      )
+      .filter((p: any): p is number => typeof p === "number")
 
-      if (
-        variantPrice &&
-        typeof variantPrice === "object" &&
-        "calculated_amount" in variantPrice
-      ) {
-        return typeof variantPrice.calculated_amount === "number"
-          ? variantPrice.calculated_amount
-          : null
-      }
+    if (tieredPrices && tieredPrices.length > 0) {
+      return Math.min(...tieredPrices)
+    }
 
-      if (typeof variantPrice === "number") {
-        return variantPrice
-      }
+    // Fall back to calculated_price
+    const calcPrices = product.variants
+      ?.map((v) => {
+        const variantPrice = v?.calculated_price
+        if (
+          variantPrice &&
+          typeof variantPrice === "object" &&
+          "calculated_amount" in variantPrice
+        ) {
+          return typeof variantPrice.calculated_amount === "number"
+            ? variantPrice.calculated_amount
+            : null
+        }
+        if (typeof variantPrice === "number") return variantPrice
+        return null
+      })
+      .filter((p): p is number => typeof p === "number")
 
-      return null
-    })
-    .filter((p): p is number => typeof p === "number")
-  const minPrice = prices && prices.length > 0 ? Math.min(...prices) : null
+    return calcPrices && calcPrices.length > 0 ? Math.min(...calcPrices) : null
+  }, [product.variants])
 
   const sku = useMemo(() => {
     const primarySku = firstVariant?.sku?.trim()
