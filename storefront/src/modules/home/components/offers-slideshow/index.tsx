@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 interface Slide {
@@ -73,10 +74,14 @@ const OffersSlideshow = () => {
           transition={{ duration: 0.5 }}
           className="absolute inset-0"
         >
-          <img
+          <Image
             src={slide.image}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority={slide.id === 1}
+            sizes="100vw"
+            quality={85}
           />
 
           {slide.ctaText && slide.ctaLink && (
@@ -98,6 +103,22 @@ const OffersSlideshow = () => {
           )}
         </motion.div>
       </AnimatePresence>
+
+      {/* Preload next slide */}
+      {slides.map((s, index) =>
+        index !== currentSlide && index !== 0 ? (
+          <Image
+            key={s.id}
+            src={s.image}
+            alt=""
+            fill
+            className="object-cover opacity-0 pointer-events-none"
+            sizes="100vw"
+            quality={85}
+            aria-hidden
+          />
+        ) : null
+      )}
 
       {/* Navigation Arrows */}
       <button
