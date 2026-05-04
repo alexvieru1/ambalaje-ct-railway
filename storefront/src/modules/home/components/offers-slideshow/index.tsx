@@ -104,22 +104,6 @@ const OffersSlideshow = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Preload next slide */}
-      {slides.map((s, index) =>
-        index !== currentSlide && index !== 0 ? (
-          <Image
-            key={s.id}
-            src={s.image}
-            alt=""
-            fill
-            className="object-cover opacity-0 pointer-events-none"
-            sizes="100vw"
-            quality={85}
-            aria-hidden
-          />
-        ) : null
-      )}
-
       {/* Navigation Arrows */}
       <button
         type="button"

@@ -108,13 +108,13 @@ export default async function Footer() {
               rel="noopener noreferrer"
               title="ANPC - Soluționarea Alternativă a Litigiilor"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/images/anpc-sal.png"
                 alt="ANPC SAL"
                 width={150}
                 height={37}
                 className="object-contain"
+                loading="lazy"
               />
             </a>
             <a
@@ -123,13 +123,13 @@ export default async function Footer() {
               rel="noopener noreferrer"
               title="ANPC - Soluționarea Online a Litigiilor"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/images/anpc-sol.png"
                 alt="ANPC SOL"
                 width={150}
                 height={37}
                 className="object-contain"
+                loading="lazy"
               />
             </a>
           </div>
