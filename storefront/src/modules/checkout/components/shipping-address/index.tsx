@@ -4,7 +4,6 @@ import Input from "@modules/common/components/input"
 import React, { useState, useEffect, useMemo } from "react"
 import CountrySelect from "../country-select"
 import AddressSelect from "../address-select"
-import { mapKeys } from "lodash"
 import { Container } from "@medusajs/ui"
 import Checkbox from "@modules/common/components/checkbox"
 
@@ -108,8 +107,11 @@ const ShippingAddress = ({
           <AddressSelect
             addresses={customer.addresses}
             addressInput={
-              mapKeys(formData, (_, key) =>
-                key.replace("shipping_address.", "")
+              Object.fromEntries(
+                Object.entries(formData).map(([key, value]) => [
+                  key.replace("shipping_address.", ""),
+                  value,
+                ])
               ) as HttpTypes.StoreCartAddress
             }
             onSelect={setFormAddress}

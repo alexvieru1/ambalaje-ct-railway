@@ -72,6 +72,12 @@ const nextConfig = {
         "storefront-production-0315.up.railway.app",
       ],
     },
+    optimizePackageImports: [
+      "lucide-react",
+      "@tabler/icons-react",
+      "@medusajs/ui",
+      "date-fns",
+    ],
   },
 }
 

@@ -16,6 +16,11 @@
 /.next/
 /out/
 
+# next-sitemap output (regenerated on every build)
+/public/sitemap.xml
+/public/sitemap-*.xml
+/public/robots.txt
+
 # production
 /build
 
@@ -28,6 +33,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# original (uncompressed) images, kept locally as backup
+public/images/_originals/
 
 # local env files
 .env

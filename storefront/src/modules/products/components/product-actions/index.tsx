@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@medusajs/ui"
-import { isEqual } from "lodash"
 import { useParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 
@@ -51,9 +50,12 @@ export default function ProductActions({
       return
     }
 
+    const optionKeys = Object.keys(options)
     return product.variants.find((v) => {
-      const variantOptions = optionsAsKeymap(v.options)
-      return isEqual(variantOptions, options)
+      const variantOptions = optionsAsKeymap(v.options) ?? {}
+      const variantKeys = Object.keys(variantOptions)
+      if (variantKeys.length !== optionKeys.length) return false
+      return optionKeys.every((k) => variantOptions[k] === options[k])
     })
   }, [product.variants, options])
 
