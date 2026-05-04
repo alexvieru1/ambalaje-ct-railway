@@ -1,8 +1,8 @@
 import { Container, clx } from "@medusajs/ui"
-import Image from "next/image"
 import React from "react"
 
 import PlaceholderImage from "@modules/common/icons/placeholder-image"
+import ThumbnailImage from "./thumbnail-image"
 
 type ThumbnailProps = {
   thumbnail?: string | null
@@ -10,8 +10,17 @@ type ThumbnailProps = {
   images?: any[] | null
   size?: "small" | "medium" | "large" | "full" | "square"
   isFeatured?: boolean
+  priority?: boolean
   className?: string
   "data-testid"?: string
+}
+
+const SIZE_TO_SIZES: Record<NonNullable<ThumbnailProps["size"]>, string> = {
+  small: "180px",
+  medium: "290px",
+  large: "440px",
+  square: "(min-width: 768px) 33vw, 50vw",
+  full: "(min-width: 1280px) 320px, (min-width: 768px) 33vw, 50vw",
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({
@@ -19,6 +28,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   images,
   size = "small",
   isFeatured,
+  priority = false,
   className,
   "data-testid": dataTestid,
 }) => {
@@ -41,29 +51,18 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       )}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} />
+      {initialImage ? (
+        <ThumbnailImage
+          src={initialImage}
+          sizes={SIZE_TO_SIZES[size]}
+          priority={priority}
+        />
+      ) : (
+        <div className="w-full h-full absolute inset-0 flex items-center justify-center">
+          <PlaceholderImage size={size === "small" ? 16 : 24} />
+        </div>
+      )}
     </Container>
-  )
-}
-
-const ImageOrPlaceholder = ({
-  image,
-  size,
-}: Pick<ThumbnailProps, "size"> & { image?: string }) => {
-  return image ? (
-    <Image
-      src={image}
-      alt="Thumbnail"
-      className="absolute inset-0 object-cover object-center"
-      draggable={false}
-      quality={50}
-      sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-      fill
-    />
-  ) : (
-    <div className="w-full h-full absolute inset-0 flex items-center justify-center">
-      <PlaceholderImage size={size === "small" ? 16 : 24} />
-    </div>
   )
 }
 
