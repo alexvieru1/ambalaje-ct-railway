@@ -22,7 +22,6 @@ type PackagingOption = {
 type StandardOption = {
   label: string
   defaultMultiplier: number
-  selectValues?: number[]
   enabled: boolean
   multiplier: number
 }
@@ -30,11 +29,10 @@ type StandardOption = {
 const STANDARD_DEFAULTS: {
   label: string
   defaultMultiplier: number
-  selectValues?: number[]
 }[] = [
   { label: "buc", defaultMultiplier: 1 },
   { label: "set", defaultMultiplier: 10 },
-  { label: "bax", defaultMultiplier: 25, selectValues: [25, 50] },
+  { label: "bax", defaultMultiplier: 25 },
 ]
 
 /** Disable scroll-to-change on number inputs */
@@ -112,32 +110,17 @@ const StandardOptionRow = ({
     <span className="text-sm font-medium w-10 capitalize">{opt.label}</span>
     <span className="text-xs text-gray-500">×</span>
 
-    {opt.selectValues ? (
-      <select
-        className="w-24 border rounded-md px-2 py-2 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
-        value={opt.multiplier}
-        onChange={(e) => onMultiplierChange(Number(e.target.value))}
-        disabled={!opt.enabled}
-      >
-        {opt.selectValues.map((v) => (
-          <option key={v} value={v}>
-            {v}
-          </option>
-        ))}
-      </select>
-    ) : (
-      <input
-        type="number"
-        className="w-24 border rounded-md px-2 py-2 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
-        value={opt.multiplier}
-        onChange={(e) =>
-          onMultiplierChange(Number(e.target.value) || opt.defaultMultiplier)
-        }
-        onWheel={noScrollNumber}
-        min={1}
-        disabled={!opt.enabled}
-      />
-    )}
+    <input
+      type="number"
+      className="w-24 border rounded-md px-2 py-2 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+      value={opt.multiplier}
+      onChange={(e) =>
+        onMultiplierChange(Number(e.target.value) || opt.defaultMultiplier)
+      }
+      onWheel={noScrollNumber}
+      min={1}
+      disabled={!opt.enabled}
+    />
   </div>
 )
 
