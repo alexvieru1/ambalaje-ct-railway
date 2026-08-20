@@ -20,7 +20,8 @@
     "dev": "medusa develop",
     "email:dev": "email dev --dir=./src/modules/email-notifications/templates --port=3002",
     "predeploy": "medusa db:migrate",
-    "preinstall": "corepack enable"
+    "preinstall": "corepack enable",
+    "test": "jest"
   },
   "dependencies": {
     "@medusajs/admin-sdk": "latest",
