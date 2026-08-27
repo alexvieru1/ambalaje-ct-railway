@@ -15,6 +15,17 @@ fs.copyFileSync(
   path.join(MEDUSA_SERVER_PATH, 'pnpm-lock.yaml')
 );
 
+// Copy patches/ if it exists.
+// package.json carries pnpm.patchedDependencies, which points at these files by
+// relative path. `medusa build` copies package.json into .medusa/server but not
+// the patches, so the install below fails with ENOENT unless they come along.
+const patchesPath = path.join(process.cwd(), 'patches');
+if (fs.existsSync(patchesPath)) {
+  fs.cpSync(patchesPath, path.join(MEDUSA_SERVER_PATH, 'patches'), {
+    recursive: true,
+  });
+}
+
 // Copy .env if it exists
 const envPath = path.join(process.cwd(), '.env');
 if (fs.existsSync(envPath)) {
