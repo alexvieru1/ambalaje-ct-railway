@@ -9,6 +9,8 @@ import {
 import { SetTieredPricesSchema } from "./admin/set-tiered-prices/validators";
 import { SetPackagingOptionsSchema } from "./admin/set-packaging-options/validators";
 import { SetVariantPackagingSchema } from "./admin/set-variant-packaging/validators";
+import { SmartBillSyncSchema } from "./admin/smartbill-sync/validators";
+import { AssignSkuSchema } from "./admin/smartbill-audit/assign-sku/validators";
 import { StoreAddCartLineItem } from "@medusajs/medusa/api/store/carts/validators";
 
 // Middleware to redirect root path to admin
@@ -44,6 +46,16 @@ export default defineMiddlewares({
       matcher: "/admin/set-variant-packaging",
       method: "POST",
       middlewares: [validateAndTransformBody(SetVariantPackagingSchema)],
+    },
+    {
+      matcher: "/admin/smartbill-sync",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SmartBillSyncSchema)],
+    },
+    {
+      matcher: "/admin/smartbill-audit/assign-sku",
+      method: "POST",
+      middlewares: [validateAndTransformBody(AssignSkuSchema)],
     },
     {
       matcher: "/store/carts/:id/line-items-tiered", // <-- your custom route

@@ -100,3 +100,55 @@ export const WORKER_MODE =
  * Disable Admin
  */
 export const SHOULD_DISABLE_ADMIN = process.env.MEDUSA_DISABLE_ADMIN === 'true'
+
+/**
+ * SmartBill Cloud — source of truth for inventory.
+ *
+ * Credentials come from SmartBill Cloud → Contul meu → Integrari.
+ * The sync is inert unless SMARTBILL_SYNC_ENABLED is 'true', and it only ever
+ * writes when SMARTBILL_SYNC_DRY_RUN is explicitly 'false'.
+ */
+export const SMARTBILL_USERNAME = process.env.SMARTBILL_USERNAME
+export const SMARTBILL_TOKEN = process.env.SMARTBILL_TOKEN
+export const SMARTBILL_CIF = process.env.SMARTBILL_CIF
+
+/**
+ * Gestiune name exactly as it appears in SmartBill — CASE-SENSITIVE.
+ */
+export const SMARTBILL_WAREHOUSE = process.env.SMARTBILL_WAREHOUSE
+
+/**
+ * Medusa stock location the SmartBill gestiune maps to.
+ */
+export const SMARTBILL_STOCK_LOCATION_ID = process.env.SMARTBILL_STOCK_LOCATION_ID
+
+/**
+ * True only when every credential and mapping needed for a sync is present.
+ */
+export const SMARTBILL_CONFIGURED = Boolean(
+  SMARTBILL_USERNAME &&
+    SMARTBILL_TOKEN &&
+    SMARTBILL_CIF &&
+    SMARTBILL_WAREHOUSE &&
+    SMARTBILL_STOCK_LOCATION_ID,
+)
+
+export const SMARTBILL_SYNC_ENABLED = process.env.SMARTBILL_SYNC_ENABLED === 'true'
+
+/**
+ * Cron expression for the scheduled sync. Defaults to hourly at :15.
+ */
+export const SMARTBILL_SYNC_CRON = process.env.SMARTBILL_SYNC_CRON || '15 * * * *'
+
+/**
+ * Dry run is the default: writes happen only on an explicit 'false'.
+ */
+export const SMARTBILL_SYNC_DRY_RUN = process.env.SMARTBILL_SYNC_DRY_RUN !== 'false'
+
+/**
+ * Auto-release Medusa reservations older than this many hours; 0 disables.
+ */
+export const SMARTBILL_RESERVATION_MAX_AGE_HOURS = Number.parseInt(
+  process.env.SMARTBILL_RESERVATION_MAX_AGE_HOURS ?? '0',
+  10,
+) || 0
