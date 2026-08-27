@@ -72,6 +72,9 @@
   "pnpm": {
     "overrides": {
       "webpack": "^5"
+    },
+    "patchedDependencies": {
+      "@medusajs/dashboard@2.6.1": "patches/@medusajs__dashboard@2.6.1.patch"
     }
   }
 }

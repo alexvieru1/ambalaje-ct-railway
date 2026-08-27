@@ -1,0 +1,267 @@
+diff --git a/dist/app.js b/dist/app.js
+index 337045f0d8ed9db6d37214a673d066d5a7ed536c..9e7d028a53da42573db19de4a18dde0246b199a2 100644
+--- a/dist/app.js
++++ b/dist/app.js
+@@ -61645,16 +61645,33 @@ var init_config = __esm({
+     defaultI18nOptions = {
+       debug: process.env.NODE_ENV === "development",
+       detection: {
+-        caches: ["cookie", "localStorage", "header"],
++        caches: ["cookie", "localStorage"],
+         lookupCookie: "lng",
+         lookupLocalStorage: "lng",
+-        order: ["cookie", "localStorage", "header"]
++        order: ["cookie", "localStorage"]
+       },
+-      fallbackLng: "en",
++      fallbackLng: ["ro", "en"],
+       interpolation: {
+         escapeValue: false
+       },
+-      resources: translations_default,
++      resources: (() => {
++        // ambalaje-ct: upstream ro.json is missing 28 keys that exist in
++        // en.json. dist ships its own compiled translations, so they are merged in
++        // here rather than only in src/i18n/translations/ro.json.
++        const extra = {"products":{"fields":{"shipping_profile":{"label":"Profil de expediere","hint":"Asociați produsul cu un profil de expediere"}},"shippingProfile":{"header":"Configurare expediere","edit":{"header":"Configurare expediere","toasts":{"success":"Profilul de expediere pentru {{title}} a fost actualizat."}},"create":{"errors":{"required":"Profilul de expediere este obligatoriu"}}}},"orders":{"fulfillment":{"differentOptionSelected":"Opțiunea de livrare selectată este diferită de cea aleasă de client.","disabledItemTooltip":"Opțiunea de livrare selectată nu permite onorarea acestui articol","markAsPickedUp":"Marcați ca ridicat","error":{"noShippingOption":"Opțiunea de livrare este obligatorie","noLocation":"Locația este obligatorie"},"toast":{"fulfillmentPickedUp":"Comanda a fost marcată ca ridicată"}}},"stockLocations":{"salesChannels":{"hint":"Gestionați canalele de vânzare conectate la această locație."},"pickupOptions":{"edit":{"header":"Editați opțiunea de ridicare"}},"shippingOptions":{"create":{"pickup":{"header":"Creați o opțiune de ridicare pentru {{zone}}","hint":"Creați o opțiune nouă de ridicare pentru a defini cum sunt ridicate produsele din această locație.","label":"Opțiuni de ridicare","successToast":"Opțiunea de ridicare {{name}} a fost creată cu succes."}},"fields":{"count":{"pickup_one":"{{count}} opțiune de ridicare","pickup_other":"{{count}} opțiuni de ridicare"}}}},"store":{"defaultSalesChannel":"Canal de vânzare implicit","defaultLocation":"Locație implicită"},"salesChannels":{"list":{"empty":{"heading":"Nu există canale de vânzare","description":"După ce creați un canal de vânzare, acesta va apărea aici."},"filtered":{"heading":"Niciun rezultat","description":"Niciun canal de vânzare nu corespunde filtrelor aplicate."}}},"labels":{"beaware":"Atenție","loading":"Se încarcă"}};
++        const merge = (target, source) => {
++          for (const key of Object.keys(source)) {
++            if (source[key] && typeof source[key] === "object") {
++              target[key] = target[key] || {};
++              merge(target[key], source[key]);
++            } else if (target[key] === undefined) {
++              target[key] = source[key];
++            }
++          }
++        };
++        merge(translations_default.ro.translation, extra);
++        return translations_default;
++      })(),
+       supportedLngs: Object.keys(translations_default)
+     };
+   }
+diff --git a/dist/chunk-4SVUQSQ5.mjs b/dist/chunk-4SVUQSQ5.mjs
+index fa5638817592f473983689344639bef4187c0065..488398cb2f384d7d25294eae9132248b774cc697 100644
+--- a/dist/chunk-4SVUQSQ5.mjs
++++ b/dist/chunk-4SVUQSQ5.mjs
+@@ -60621,16 +60621,33 @@ var translations_default = {
+ var defaultI18nOptions = {
+   debug: process.env.NODE_ENV === "development",
+   detection: {
+-    caches: ["cookie", "localStorage", "header"],
++    caches: ["cookie", "localStorage"],
+     lookupCookie: "lng",
+     lookupLocalStorage: "lng",
+-    order: ["cookie", "localStorage", "header"]
++    order: ["cookie", "localStorage"]
+   },
+-  fallbackLng: "en",
++  fallbackLng: ["ro", "en"],
+   interpolation: {
+     escapeValue: false
+   },
+-  resources: translations_default,
++  resources: (() => {
++    // ambalaje-ct: upstream ro.json is missing 28 keys that exist in
++    // en.json. dist ships its own compiled translations, so they are merged in
++    // here rather than only in src/i18n/translations/ro.json.
++    const extra = {"products":{"fields":{"shipping_profile":{"label":"Profil de expediere","hint":"Asociați produsul cu un profil de expediere"}},"shippingProfile":{"header":"Configurare expediere","edit":{"header":"Configurare expediere","toasts":{"success":"Profilul de expediere pentru {{title}} a fost actualizat."}},"create":{"errors":{"required":"Profilul de expediere este obligatoriu"}}}},"orders":{"fulfillment":{"differentOptionSelected":"Opțiunea de livrare selectată este diferită de cea aleasă de client.","disabledItemTooltip":"Opțiunea de livrare selectată nu permite onorarea acestui articol","markAsPickedUp":"Marcați ca ridicat","error":{"noShippingOption":"Opțiunea de livrare este obligatorie","noLocation":"Locația este obligatorie"},"toast":{"fulfillmentPickedUp":"Comanda a fost marcată ca ridicată"}}},"stockLocations":{"salesChannels":{"hint":"Gestionați canalele de vânzare conectate la această locație."},"pickupOptions":{"edit":{"header":"Editați opțiunea de ridicare"}},"shippingOptions":{"create":{"pickup":{"header":"Creați o opțiune de ridicare pentru {{zone}}","hint":"Creați o opțiune nouă de ridicare pentru a defini cum sunt ridicate produsele din această locație.","label":"Opțiuni de ridicare","successToast":"Opțiunea de ridicare {{name}} a fost creată cu succes."}},"fields":{"count":{"pickup_one":"{{count}} opțiune de ridicare","pickup_other":"{{count}} opțiuni de ridicare"}}}},"store":{"defaultSalesChannel":"Canal de vânzare implicit","defaultLocation":"Locație implicită"},"salesChannels":{"list":{"empty":{"heading":"Nu există canale de vânzare","description":"După ce creați un canal de vânzare, acesta va apărea aici."},"filtered":{"heading":"Niciun rezultat","description":"Niciun canal de vânzare nu corespunde filtrelor aplicate."}}},"labels":{"beaware":"Atenție","loading":"Se încarcă"}};
++    const merge = (target, source) => {
++      for (const key of Object.keys(source)) {
++        if (source[key] && typeof source[key] === "object") {
++          target[key] = target[key] || {};
++          merge(target[key], source[key]);
++        } else if (target[key] === undefined) {
++          target[key] = source[key];
++        }
++      }
++    };
++    merge(translations_default.ro.translation, extra);
++    return translations_default;
++  })(),
+   supportedLngs: Object.keys(translations_default)
+ };
+ 
+diff --git a/src/i18n/config.ts b/src/i18n/config.ts
+index 966cbfaafde19dca77a55fb75204ded2d44641d1..81e8c226ca7918b3aabeb4f9a4aa97b19fe613c8 100644
+--- a/src/i18n/config.ts
++++ b/src/i18n/config.ts
+@@ -5,12 +5,19 @@ import translations from "./translations"
+ export const defaultI18nOptions: InitOptions = {
+   debug: process.env.NODE_ENV === "development",
+   detection: {
+-    caches: ["cookie", "localStorage", "header"],
++    // "header" is deliberately absent from `order`: this is a Romanian shop
++    // and the admin should open in Romanian regardless of the browser's
++    // Accept-Language. A user who picks another language in their profile
++    // still wins, because i18next writes their choice to the cookie and
++    // localStorage, both of which are checked first.
++    caches: ["cookie", "localStorage"],
+     lookupCookie: "lng",
+     lookupLocalStorage: "lng",
+-    order: ["cookie", "localStorage", "header"],
++    order: ["cookie", "localStorage"],
+   },
+-  fallbackLng: "en",
++  // Romanian first so an undetected language lands on ro; English second so a
++  // key missing from ro.json still renders real text rather than the key name.
++  fallbackLng: ["ro", "en"],
+   interpolation: {
+     escapeValue: false,
+   },
+diff --git a/src/i18n/translations/ro.json b/src/i18n/translations/ro.json
+index 5bc24ebbfe243b0e875f0c11a0a8be6f35a807e3..1aedc8593a3583a1cb365e421b592d926b3929dc 100644
+--- a/src/i18n/translations/ro.json
++++ b/src/i18n/translations/ro.json
+@@ -604,6 +604,10 @@
+       },
+       "hs_code": {
+         "label": "Cod HS"
++      },
++      "shipping_profile": {
++        "label": "Profil de expediere",
++        "hint": "Asociați produsul cu un profil de expediere"
+       }
+     },
+     "variant": {
+@@ -691,7 +695,21 @@
+       }
+     },
+     "variantCount_one": "{{count}} variantă",
+-    "variantCount_other": "{{count}} variante"
++    "variantCount_other": "{{count}} variante",
++    "shippingProfile": {
++      "header": "Configurare expediere",
++      "edit": {
++        "header": "Configurare expediere",
++        "toasts": {
++          "success": "Profilul de expediere pentru {{title}} a fost actualizat."
++        }
++      },
++      "create": {
++        "errors": {
++          "required": "Profilul de expediere este obligatoriu"
++        }
++      }
++    }
+   },
+   "collections": {
+     "domain": "Colecții",
+@@ -1269,7 +1287,9 @@
+       "error": {
+         "wrongQuantity": "Un singur articol este disponibil pentru îndeplinire",
+         "noItems": "Nu există elemente de îndeplinit.",
+-        "wrongQuantity_other": "Cantitatea ar trebui să fie un număr între 1 și {{number}}"
++        "wrongQuantity_other": "Cantitatea ar trebui să fie un număr între 1 și {{number}}",
++        "noShippingOption": "Opțiunea de livrare este obligatorie",
++        "noLocation": "Locația este obligatorie"
+       },
+       "status": {
+         "notFulfilled": "Neîmplinit",
+@@ -1288,11 +1308,15 @@
+         "created": "Implementare creată cu succes",
+         "canceled": "Îndeplinirea a fost anulată",
+         "fulfillmentShipped": "Nu se poate anula o livrare deja expediată",
+-        "fulfillmentDelivered": "Realizare marcată ca livrată cu succes"
++        "fulfillmentDelivered": "Realizare marcată ca livrată cu succes",
++        "fulfillmentPickedUp": "Comanda a fost marcată ca ridicată"
+       },
+       "trackingLabel": "Urmărire",
+       "shippingFromLabel": "Livrare de la",
+-      "itemsLabel": "Articole"
++      "itemsLabel": "Articole",
++      "differentOptionSelected": "Opțiunea de livrare selectată este diferită de cea aleasă de client.",
++      "disabledItemTooltip": "Opțiunea de livrare selectată nu permite onorarea acestui articol",
++      "markAsPickedUp": "Marcați ca ridicat"
+     },
+     "refund": {
+       "title": "Creați rambursare",
+@@ -1495,7 +1519,8 @@
+       "connectedTo": "Conectat la {{count}} de {{total}} canale de vânzare",
+       "noChannels": "Locația nu este conectată la niciun canal de vânzare.",
+       "action": "Conectați canalele de vânzare",
+-      "successToast": "Canalele de vânzare au fost actualizate cu succes."
++      "successToast": "Canalele de vânzare au fost actualizate cu succes.",
++      "hint": "Gestionați canalele de vânzare conectate la această locație."
+     },
+     "shippingOptions": {
+       "create": {
+@@ -1515,7 +1540,13 @@
+           "details": "Detalii",
+           "prices": "Preturi"
+         },
+-        "action": "Creați opțiunea"
++        "action": "Creați opțiunea",
++        "pickup": {
++          "header": "Creați o opțiune de ridicare pentru {{zone}}",
++          "hint": "Creați o opțiune nouă de ridicare pentru a defini cum sunt ridicate produsele din această locație.",
++          "label": "Opțiuni de ridicare",
++          "successToast": "Opțiunea de ridicare {{name}} a fost creată cu succes."
++        }
+       },
+       "delete": {
+         "confirmation": "Sunteți pe cale să ștergeți opțiunea de expediere {{name}}. ",
+@@ -1569,7 +1600,9 @@
+           "shipping_one": "{{count}} opțiunea de livrare",
+           "shipping_other": "{{count}} opțiuni de expediere",
+           "returns_one": "{{count}} opțiunea de returnare",
+-          "returns_other": "{{count}} opțiuni de returnare"
++          "returns_other": "{{count}} opțiuni de returnare",
++          "pickup_one": "{{count}} opțiune de ridicare",
++          "pickup_other": "{{count}} opțiuni de ridicare"
+         },
+         "priceType": {
+           "label": "Tip de preț",
+@@ -1619,6 +1652,11 @@
+         "noRecords": "Nu există zone de servicii pentru a adăuga opțiuni de expediere.",
+         "tip": "O zonă de serviciu este o colecție de zone sau zone geografice. "
+       }
++    },
++    "pickupOptions": {
++      "edit": {
++        "header": "Editați opțiunea de ridicare"
++      }
+     }
+   },
+   "shippingProfile": {
+@@ -2317,7 +2355,9 @@
+       "updatedTaxInclusivitySuccessfully": "Prețul cu taxe incluse a fost actualizat cu succes"
+     },
+     "removeCurrencyWarning_one": "Sunteți pe cale să eliminați {{count}} moneda din magazinul dvs. ",
+-    "removeCurrencyWarning_other": "Sunteți pe cale să eliminați {{count}} monede din magazinul dvs. "
++    "removeCurrencyWarning_other": "Sunteți pe cale să eliminați {{count}} monede din magazinul dvs. ",
++    "defaultSalesChannel": "Canal de vânzare implicit",
++    "defaultLocation": "Locație implicită"
+   },
+   "regions": {
+     "domain": "Regiunile",
+@@ -2471,7 +2511,17 @@
+       }
+     },
+     "removeProductsWarning_one": "Sunteți pe cale să eliminați {{count}} produs de la {{sales_channel}}.",
+-    "removeProductsWarning_other": "Sunteți pe cale să eliminați {{count}} produse de la {{sales_channel}}."
++    "removeProductsWarning_other": "Sunteți pe cale să eliminați {{count}} produse de la {{sales_channel}}.",
++    "list": {
++      "empty": {
++        "heading": "Nu există canale de vânzare",
++        "description": "După ce creați un canal de vânzare, acesta va apărea aici."
++      },
++      "filtered": {
++        "heading": "Niciun rezultat",
++        "description": "Niciun canal de vânzare nu corespunde filtrelor aplicate."
++      }
++    }
+   },
+   "apiKeyManagement": {
+     "domain": {
+@@ -2752,7 +2802,9 @@
+     "added": "Adăugat",
+     "removed": "Îndepărtat",
+     "from": "Din",
+-    "to": "La"
++    "to": "La",
++    "beaware": "Atenție",
++    "loading": "Se încarcă"
+   },
+   "fields": {
+     "amount": "Cantitate",
