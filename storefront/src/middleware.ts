@@ -142,5 +142,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|favicon.ico|.*\\.png|.*\\.jpg|.*\\.gif|.*\\.svg).*)"], // prevents redirecting on static files
+  // Skip API routes, Next internals, robots/sitemap and any static file, so
+  // they are never redirected to a /<countryCode>/... path.
+  matcher: [
+    "/((?!api|_next/static|_next/image|robots\\.txt|sitemap\\.xml|.*\\.(?:png|jpe?g|gif|svg|webp|avif|ico|txt|xml|webmanifest)$).*)",
+  ],
 }
