@@ -24,14 +24,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@medusajs/admin-sdk": "latest",
-    "@medusajs/cli": "latest",
-    "@medusajs/core-flows": "latest",
-    "@medusajs/framework": "latest",
-    "@medusajs/medusa": "latest",
-    "@medusajs/notification-sendgrid": "latest",
-    "@medusajs/payment-stripe": "latest",
-    "@medusajs/workflow-engine-redis": "latest",
+    "@medusajs/admin-sdk": "2.6.1",
+    "@medusajs/cli": "2.6.1",
+    "@medusajs/core-flows": "2.6.1",
+    "@medusajs/framework": "2.6.1",
+    "@medusajs/medusa": "2.6.1",
+    "@medusajs/notification-sendgrid": "2.6.1",
+    "@medusajs/payment-stripe": "2.6.1",
+    "@medusajs/workflow-engine-redis": "2.6.1",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
@@ -47,7 +47,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "latest",
+    "@medusajs/test-utils": "2.6.1",
     "@mikro-orm/cli": "6.4.3",
     "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.37",
