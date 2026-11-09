@@ -1,3 +1,4 @@
+import { COMPANY } from "@lib/company"
 import { Logo } from "@lib/components/logo"
 import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -42,9 +43,25 @@ export default async function Footer() {
         <div>
           <h4 className="text-sm font-semibold mb-3">Contact</h4>
           <ul className="text-sm text-muted-foreground space-y-2">
-            <li>Tel: 0722 631 611</li>
-            <li>Email: office@ambalajeconstanta.ro</li>
-            <li>B-dul Aurel Vlaicu, 163, Constanța</li>
+            <li>
+              Tel:{" "}
+              <a
+                href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}
+                className="hover:text-[#44b74a] transition"
+              >
+                {COMPANY.phone}
+              </a>
+            </li>
+            <li>
+              Email:{" "}
+              <a
+                href={`mailto:${COMPANY.email}`}
+                className="hover:text-[#44b74a] transition"
+              >
+                {COMPANY.email}
+              </a>
+            </li>
+            <li>{COMPANY.address}</li>
           </ul>
           <div className="flex gap-3 mt-4">
             <a
@@ -137,9 +154,17 @@ export default async function Footer() {
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-gray-200 py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Ambalaje Constanța. Toate drepturile
-        rezervate.
+      <div className="border-t border-gray-200 py-4 px-4 text-center text-xs text-muted-foreground space-y-1">
+        <p>
+          {COMPANY.legalName} · CIF {COMPANY.cif}
+          {COMPANY.tradeRegisterNumber &&
+            ` · Nr. Reg. Com. ${COMPANY.tradeRegisterNumber}`}{" "}
+          · Sediu social: {COMPANY.registeredOffice}
+        </p>
+        <p>
+          © {new Date().getFullYear()} {COMPANY.brandName}. Toate drepturile
+          rezervate.
+        </p>
       </div>
     </footer>
   )

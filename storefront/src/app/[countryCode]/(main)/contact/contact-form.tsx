@@ -1,4 +1,5 @@
 "use client"
+import { COMPANY } from "@lib/company"
 
 import { useMemo, useState } from "react"
 import { z } from "zod"
@@ -398,7 +399,10 @@ export default function ContactForm() {
               <strong>Telefon:</strong> 0722 631 611
             </li>
             <li>
-              <strong>Email:</strong> contact@ambalaje-constanta.ro
+              <strong>Email:</strong>{" "}
+              <a href={`mailto:${COMPANY.email}`} className="underline">
+                {COMPANY.email}
+              </a>
             </li>
             <li>
               <strong>Program:</strong> Luni–Vineri, 09:00–17:00

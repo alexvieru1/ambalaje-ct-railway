@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { COMPANY } from "@lib/company"
 import { Separator } from "@lib/components/ui/separator"
 import { Card, CardHeader, CardTitle, CardContent } from "@lib/components/ui/card"
 
@@ -13,7 +14,7 @@ export default function PrivacyPolicyPage() {
     <main className="mx-auto w-full max-w-4xl px-6 py-12">
       <header className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight">Politica de Confidențialitate</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Ultima actualizare: 14 octombrie 2025</p>
+        <p className="mt-2 text-sm text-muted-foreground">Ultima actualizare: 9 noiembrie 2026</p>
       </header>
 
       <Card className="mb-10">
@@ -47,11 +48,11 @@ export default function PrivacyPolicyPage() {
       <section id="cine-suntem" className="space-y-4 mb-10 scroll-mt-20">
         <h2 className="text-2xl font-semibold">1. Cine suntem</h2>
         <p className="text-muted-foreground">
-          Ambalaje Constanța (denumită în continuare „noi”) operează site-ul ambalaje-constanta.ro (denumit „Site-ul”).
+          {COMPANY.legalName}, CIF {COMPANY.cif}, cu sediul social în {COMPANY.registeredOffice} ({COMPANY.brandName}, denumită în continuare „noi”) operează site-ul {COMPANY.domain} (denumit „Site-ul”).
           Suntem operator de date conform Regulamentului (UE) 2016/679 (GDPR).
         </p>
         <p className="text-muted-foreground">
-          Date de contact operator: B-dul Exemplu nr. 123, Constanța • Email: contact@ambalaje-constanta.ro • Telefon: 07xx xxx xxx.
+          Date de contact operator: {COMPANY.address} • Email: {COMPANY.email} • Telefon: {COMPANY.phone}.
         </p>
       </section>
 
@@ -159,10 +160,11 @@ export default function PrivacyPolicyPage() {
           Pentru întrebări sau pentru a vă exercita drepturile conform GDPR, ne puteți contacta la:
         </p>
         <address className="not-italic text-muted-foreground">
-          Ambalaje Constanța<br />
-          B-dul Aurel Vlaicu, 163, Constanța<br />
-          Email: <a className="underline" href="mailto:contact@ambalaje-constanta.ro">contact@ambalaje-constanta.ro</a><br />
-          Telefon: 0722 631 611
+          {COMPANY.legalName} ({COMPANY.brandName})<br />
+          CIF: {COMPANY.cif}<br />
+          Sediu social: {COMPANY.registeredOffice}<br />
+          Email: <a href={`mailto:${COMPANY.email}`} className="underline">{COMPANY.email}</a><br />
+          Telefon: {COMPANY.phone}
         </address>
       </section>
     </main>

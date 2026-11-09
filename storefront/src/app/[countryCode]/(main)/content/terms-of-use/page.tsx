@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { COMPANY } from "@lib/company"
 import { Separator } from "@lib/components/ui/separator"
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export default function TermsOfUsePage() {
     <main className="mx-auto w-full max-w-4xl px-6 py-12">
       <header className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight">Termeni și Condiții de Utilizare</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Ultima actualizare: 14 octombrie 2025</p>
+        <p className="mt-2 text-sm text-muted-foreground">Ultima actualizare: 9 noiembrie 2026</p>
       </header>
 
       <section className="space-y-6">
@@ -26,7 +27,7 @@ export default function TermsOfUsePage() {
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">1. Informații generale</h2>
           <p className="text-muted-foreground">
-            Site-ul <strong>ambalaje-constanta.ro</strong> este operat de Ambalaje Constanța. Toate informațiile publicate pe acest site au caracter informativ și pot fi modificate fără notificare prealabilă.
+            Site-ul <strong>{COMPANY.domain}</strong> este operat de <strong>{COMPANY.legalName}</strong>, CIF {COMPANY.cif}, cu sediul social în {COMPANY.registeredOffice} (denumită în continuare „{COMPANY.brandName}”). Toate informațiile publicate pe acest site au caracter informativ și pot fi modificate fără notificare prealabilă.
           </p>
         </section>
 
@@ -97,10 +98,11 @@ export default function TermsOfUsePage() {
             Pentru orice întrebări legate de Termenii și Condițiile de utilizare, ne puteți contacta la:
           </p>
           <address className="not-italic text-muted-foreground">
-            Ambalaje Constanța<br />
-            B-dul Aurel Vlaicu, 163, Constanța<br />
-            Email: <a href="mailto:contact@ambalaje-constanta.ro" className="underline">contact@ambalaje-constanta.ro</a><br />
-            Telefon: 0722 631 611
+            {COMPANY.legalName} ({COMPANY.brandName})<br />
+            CIF: {COMPANY.cif}<br />
+            Sediu social: {COMPANY.registeredOffice}<br />
+            Email: <a href={`mailto:${COMPANY.email}`} className="underline">{COMPANY.email}</a><br />
+            Telefon: {COMPANY.phone}
           </address>
         </section>
       </section>
